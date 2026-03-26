@@ -105,6 +105,32 @@
     .legend-item { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--text-secondary); }
     .legend-swatch { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
     .footer { margin-top:2rem; margin-left:220px; font-size:10px; color:var(--text-tertiary); border-top:0.5px solid var(--border); padding-top:10px; }
+
+    .row-name.clickable { cursor:pointer; text-decoration:underline; text-decoration-color:var(--border-mid); text-underline-offset:2px; }
+    .row-name.clickable:hover { color:var(--today-color); text-decoration-color:var(--today-color); }
+
+    .ticket-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; justify-content:center; align-items:center; }
+    .ticket-modal-overlay.open { display:flex; }
+    .ticket-modal { background:var(--bg); border:1px solid var(--border-mid); border-radius:var(--radius-md); padding:16px 20px; min-width:280px; max-width:400px; box-shadow:0 8px 32px rgba(0,0,0,0.25); }
+    .ticket-modal h3 { font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:10px; }
+    .ticket-modal a { display:flex; align-items:center; gap:8px; padding:7px 10px; margin:0 -10px; border-radius:var(--radius-sm); font-size:12px; color:var(--text-primary); text-decoration:none; transition:background 0.15s; }
+    .ticket-modal a:hover { background:var(--bg-secondary); }
+    .ticket-modal a .tk-key { font-weight:600; color:var(--today-color); min-width:80px; }
+    .ticket-modal a .tk-summary { color:var(--text-secondary); }
+    .ticket-modal .close-btn { margin-top:10px; padding:5px 12px; font-size:11px; font-family:var(--font); color:var(--text-secondary); background:var(--bg-secondary); border:0.5px solid var(--border-mid); border-radius:var(--radius-sm); cursor:pointer; }
+    .ticket-modal .close-btn:hover { color:var(--text-primary); border-color:var(--text-tertiary); }
+
+    .filter-bar { display:flex; align-items:center; gap:6px; margin-bottom:1rem; flex-wrap:wrap; }
+    .filter-bar span { font-size:11px; color:var(--text-tertiary); margin-right:2px; }
+    .filter-pill { font-family:var(--font); font-size:11px; font-weight:500; padding:4px 10px; border-radius:12px; border:1px solid var(--border-mid); background:var(--bg-secondary); color:var(--text-secondary); cursor:pointer; user-select:none; transition:all 0.15s; }
+    .filter-pill:hover { border-color:var(--text-tertiary); }
+    .filter-pill.active { color:#fff; border-color:transparent; }
+    .fp-all.active    { background:var(--text-secondary); }
+    .fp-done.active   { background:#0F6E56; }
+    .fp-alpha.active  { background:#1D9E75; }
+    .fp-alpha2.active { background:#378ADD; }
+    .fp-beta.active   { background:#7F77DD; }
+    .fp-ga.active     { background:#BA7517; }
   </style>
 </head>
 <body>
@@ -125,6 +151,16 @@
         <div class="toggle-switch on" id="planned-switch"></div>
       </div>
     </div>
+  </div>
+
+  <div class="filter-bar" id="filter-bar">
+    <span>Milestone:</span>
+    <button class="filter-pill fp-all active" data-filter="all">All</button>
+    <button class="filter-pill fp-done" data-filter="done">Done</button>
+    <button class="filter-pill fp-alpha" data-filter="alpha">Alpha</button>
+    <button class="filter-pill fp-alpha2" data-filter="alpha2">Alpha 2</button>
+    <button class="filter-pill fp-beta" data-filter="beta">Beta</button>
+    <button class="filter-pill fp-ga" data-filter="ga">GA</button>
   </div>
 
   <div class="chart-wrap">
@@ -157,7 +193,17 @@
     Last updated: <span id="last-updated"></span> &nbsp;·&nbsp; Jira LMSV3 + GitHub thrivecart/LearnV3 &nbsp;·&nbsp; <code>index-original.html</code> preserved for comparison
   </div>
 
+<div class="ticket-modal-overlay" id="ticket-modal-overlay">
+  <div class="ticket-modal" id="ticket-modal">
+    <h3 id="modal-title"></h3>
+    <div id="modal-links"></div>
+    <button class="close-btn" id="modal-close">Close</button>
+  </div>
+</div>
+
 <script>
+  const JIRA_BASE = "https://ltv8.atlassian.net/browse/";
+
   const MIN_DATE = new Date(2026, 0, 5);
   const MAX_DATE = new Date(2026, 5, 14);
 
@@ -175,6 +221,8 @@
         {
           name: "Schema + backfill",
           sub:  "602/603 · Done",
+          milestone: "done",
+          tickets: [{k:"LMSV3-602",s:"Schema migrations"},{k:"LMSV3-603",s:"Backfill existing communities"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,0,6), e:new Date(2026,1,14), label:"Planned" },
             { cls:"b-done", s:new Date(2026,2,11), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
@@ -183,6 +231,8 @@
         {
           name: "Analytics service",
           sub:  "604 · TODO — was shown as Done",
+          milestone: "alpha",
+          tickets: [{k:"LMSV3-604",s:"Analytics service"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,1,2), e:new Date(2026,2,7), label:"Planned" },
             { cls:"b-urgent", s:new Date(2026,2,11), e:new Date(2026,2,26), dl:new Date(2026,2,30), ddc:"dd-red" },
@@ -191,6 +241,8 @@
         {
           name: "Brand utilities",
           sub:  "605 · Done",
+          milestone: "done",
+          tickets: [{k:"LMSV3-605",s:"Color/brand utilities"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,1,2), e:new Date(2026,2,7), label:"Planned" },
             { cls:"b-done", s:new Date(2026,2,12), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
@@ -204,6 +256,8 @@
         {
           name: "Wizard steps 1–4",
           sub:  "606–609 · All Done",
+          milestone: "done",
+          tickets: [{k:"LMSV3-606",s:"Creator opens wizard, enters name"},{k:"LMSV3-607",s:"Creator selects access model"},{k:"LMSV3-608",s:"Creator configures branding"},{k:"LMSV3-609",s:"Creator reviews and confirms"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,1,2), e:new Date(2026,2,28), label:"Planned" },
             { cls:"b-done", s:new Date(2026,2,12), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
@@ -212,6 +266,8 @@
         {
           name: "Wizard cleanup + brand theming",
           sub:  "610–612 · All Done",
+          milestone: "done",
+          tickets: [{k:"LMSV3-610",s:"Resume abandoned wizard"},{k:"LMSV3-611",s:"Brand theme applied to views"},{k:"LMSV3-612",s:"Old creation form deprecated"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,2,2), e:new Date(2026,2,28), label:"Planned" },
             { cls:"b-done", s:new Date(2026,2,13), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
@@ -225,6 +281,8 @@
         {
           name: "Checklist + go-live blocker check",
           sub:  "613–615 · All Done",
+          milestone: "done",
+          tickets: [{k:"LMSV3-613",s:"Checklist in sidebar after wizard"},{k:"LMSV3-614",s:"Complete and skip checklist tasks"},{k:"LMSV3-615",s:"Go Live confirmation with blocker check"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,2,2), e:new Date(2026,2,28), label:"Planned" },
             { cls:"b-done", s:new Date(2026,2,13), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
@@ -238,6 +296,8 @@
         {
           name: "Public join + access model settings",
           sub:  "616/617 · Done",
+          milestone: "done",
+          tickets: [{k:"LMSV3-616",s:"Student joins public community"},{k:"LMSV3-617",s:"Creator updates access model"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,1,16), e:new Date(2026,2,14), label:"Planned" },
             { cls:"b-done", s:new Date(2026,2,11), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
@@ -246,6 +306,8 @@
         {
           name: "Free-private access request",
           sub:  "618 · In Review",
+          milestone: "alpha",
+          tickets: [{k:"LMSV3-618",s:"Student requests free-private access"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,2,17), e:new Date(2026,3,4), label:"Planned" },
             { cls:"b-atrisk", s:new Date(2026,2,13), e:new Date(2026,2,26), dl:new Date(2026,2,30), ddc:"dd-amber" },
@@ -254,6 +316,8 @@
         {
           name: "Invite codes + access requests",
           sub:  "619–621 · Mixed TODO/QA",
+          milestone: "alpha",
+          tickets: [{k:"LMSV3-619",s:"Creator manages access requests"},{k:"LMSV3-620",s:"Student joins with invite code"},{k:"LMSV3-621",s:"Creator manages invite codes"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,2,17), e:new Date(2026,3,4), label:"Planned" },
             { cls:"b-blocked", s:new Date(2026,2,11), e:new Date(2026,2,15), dl:new Date(2026,2,30), ddc:"dd-red" },
@@ -268,6 +332,8 @@
         {
           name: "Gamification config + preview",
           sub:  "622–624 · All Done",
+          milestone: "done",
+          tickets: [{k:"LMSV3-622",s:"Creator applies gamification preset"},{k:"LMSV3-623",s:"Preset override warns and preserves"},{k:"LMSV3-624",s:"Verify preview mode"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,2,17), e:new Date(2026,2,29), label:"Planned" },
             { cls:"b-done", s:new Date(2026,2,14), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
@@ -276,6 +342,8 @@
         {
           name: "Go live + take offline",
           sub:  "625/626 · Done",
+          milestone: "done",
+          tickets: [{k:"LMSV3-625",s:"Creator goes live"},{k:"LMSV3-626",s:"Creator takes community offline"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,2,23), e:new Date(2026,2,29), label:"Planned" },
             { cls:"b-done", s:new Date(2026,2,15), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
@@ -289,6 +357,8 @@
         {
           name: "Universal account + cross-community",
           sub:  "627/628 · QA / In Review",
+          milestone: "alpha",
+          tickets: [{k:"LMSV3-627",s:"Verify universal account across communities"},{k:"LMSV3-628",s:"Cross-community progress dashboard"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,3,2), e:new Date(2026,3,13), label:"Planned" },
             { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,2,26), dl:new Date(2026,2,30), ddc:"dd-amber" },
@@ -302,6 +372,8 @@
         {
           name: "Onboarding flow + cards",
           sub:  "629–636 · All in QA",
+          milestone: "alpha",
+          tickets: [{k:"LMSV3-629",s:"Onboarding overlay on first visit"},{k:"LMSV3-630",s:"Profile card (+50 pts)"},{k:"LMSV3-631",s:"Goals card (+25 pts)"},{k:"LMSV3-632",s:"Tour card (+25 pts)"},{k:"LMSV3-633",s:"First Action card (+100 pts)"},{k:"LMSV3-634",s:"Completion summary with badge"},{k:"LMSV3-635",s:"Dismiss and resume onboarding"},{k:"LMSV3-636",s:"Second community fresh onboarding"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,3,2), e:new Date(2026,3,13), label:"Planned" },
             { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,2,26), dl:new Date(2026,2,30), ddc:"dd-amber" },
@@ -315,6 +387,8 @@
         {
           name: "Badges + level-up system",
           sub:  "637–640 · All in QA",
+          milestone: "alpha2",
+          tickets: [{k:"LMSV3-637",s:"Define platform badge criteria"},{k:"LMSV3-638",s:"Badge auto-award triggers"},{k:"LMSV3-639",s:"Badge display on profile"},{k:"LMSV3-640",s:"Level-up notification"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,3,7), e:new Date(2026,3,21), label:"Planned" },
             { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,2,26), dl:new Date(2026,3,14), ddc:"dd-blue" },
@@ -329,7 +403,9 @@
       rows: [
         {
           name: "Bunny.net asset segmentation",
-          sub:  "713 · In Progress since Mar 13 · feeds into Media Library (992/994)",
+          sub:  "713 · In Progress · feeds into Media Library",
+          milestone: "alpha",
+          tickets: [{k:"LMSV3-713",s:"Spike on Bunny.net asset segmentation"},{k:"LMSV3-994",s:"Backend provider abstraction (Bunny/Piktochart)"}],
           bars: [
             { cls:"b-planned", s:new Date(2026,2,24), e:new Date(2026,3,4), label:"Planned" },
             { cls:"b-alpha2", s:new Date(2026,2,13), e:new Date(2026,3,4), dl:new Date(2026,3,4), ddc:"dd-amber" },
@@ -337,7 +413,9 @@
         },
         {
           name: "Payments integration",
-          sub:  "No Jira ticket · blocked by payments team · unblocks billing at GA",
+          sub:  "No Jira ticket · blocked by payments team",
+          milestone: "ga",
+          tickets: [],
           bars: [
             { cls:"b-planned", s:new Date(2026,2,5), e:new Date(2026,3,4), label:"Planned" },
             { cls:"b-blocked", s:new Date(2026,2,5), e:new Date(2026,2,16), dl:new Date(2026,4,11), ddc:"dd-gray" },
@@ -353,6 +431,8 @@
         {
           name: "OAuth, magic link, OTP, branding",
           sub:  "920–931 · All Done",
+          milestone: "done",
+          tickets: [{k:"LMSV3-919",s:"Auth (parent epic)"},{k:"LMSV3-920",s:"AuthLayout component"},{k:"LMSV3-926",s:"Auth brand service"},{k:"LMSV3-929",s:"Magic link branding"},{k:"LMSV3-930",s:"OTP schema + API"},{k:"LMSV3-931",s:"OTP input component"}],
           bars: [
             { cls:"b-done", s:new Date(2026,2,20), e:new Date(2026,2,26), dl:new Date(2026,2,26), ddc:"dd-green" },
           ],
@@ -365,6 +445,8 @@
         {
           name: "Editor, preview, shortcuts, bulk upload",
           sub:  "~68/80 Done · mobile + drip remaining",
+          milestone: "alpha",
+          tickets: [{k:"LMSV3-457",s:"Course Management (parent epic)"}],
           bars: [
             { cls:"b-done",   s:new Date(2026,2,3),  e:new Date(2026,2,24), dl:new Date(2026,2,24), ddc:"dd-green" },
             { cls:"b-atrisk", s:new Date(2026,2,24), e:new Date(2026,3,3),  dl:new Date(2026,3,3),  ddc:"dd-amber" },
@@ -378,6 +460,8 @@
         {
           name: "Skeleton, lock icons, CTA, branding",
           sub:  "985–990 · 6/6 Done",
+          milestone: "done",
+          tickets: [{k:"LMSV3-984",s:"Student Course Display (parent)"},{k:"LMSV3-985",s:"Skeleton loader"},{k:"LMSV3-986",s:"Lock icons by type"},{k:"LMSV3-987",s:"Complete and Continue CTA"},{k:"LMSV3-988",s:"Sidebar collapse toggle"},{k:"LMSV3-989",s:"Celebration modal"},{k:"LMSV3-990",s:"Per-course accent color"}],
           bars: [
             { cls:"b-done", s:new Date(2026,2,24), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
           ],
@@ -390,6 +474,8 @@
         {
           name: "Lesson content templates",
           sub:  "935–940 · All Done",
+          milestone: "done",
+          tickets: [{k:"LMSV3-934",s:"Lesson Blueprints (parent)"},{k:"LMSV3-935",s:"Blueprint service"},{k:"LMSV3-936",s:"Blueprint API"},{k:"LMSV3-937",s:"Blueprint hooks"},{k:"LMSV3-938",s:"Blueprint UI"},{k:"LMSV3-939",s:"Blueprint picker"},{k:"LMSV3-940",s:"PlateEditor integration"}],
           bars: [
             { cls:"b-done", s:new Date(2026,2,24), e:new Date(2026,2,26), dl:new Date(2026,2,26), ddc:"dd-green" },
           ],
@@ -402,6 +488,8 @@
         {
           name: "Media SDK + integrations",
           sub:  "993–1000 · 4/9 active, 5 TODO",
+          milestone: "alpha2",
+          tickets: [{k:"LMSV3-992",s:"Media Library (parent)"},{k:"LMSV3-993",s:"Media assets schema + CRUD"},{k:"LMSV3-994",s:"Provider abstraction"},{k:"LMSV3-995",s:"Piktochart token exchange"},{k:"LMSV3-996",s:"Piktochart SDK widget"},{k:"LMSV3-997",s:"Wire into Course Builder"},{k:"LMSV3-998",s:"Wire into Community Settings"},{k:"LMSV3-999",s:"Wire into Creator Profile"},{k:"LMSV3-1000",s:"Env config + deploy readiness"}],
           bars: [
             { cls:"b-alpha2", s:new Date(2026,2,24), e:new Date(2026,3,7), dl:new Date(2026,3,14), ddc:"dd-blue" },
           ],
@@ -414,6 +502,8 @@
         {
           name: "Quiz Creator",
           sub:  "869 · 1/12 Done, 10 blocked",
+          milestone: "beta",
+          tickets: [{k:"LMSV3-869",s:"Quiz Creator (parent)"},{k:"LMSV3-870",s:"Inline card-based editing"},{k:"LMSV3-871",s:"Rich text editing"},{k:"LMSV3-872",s:"AI quiz generator"},{k:"LMSV3-873",s:"Visual question type selector"},{k:"LMSV3-874",s:"Replace inline SVGs with Lucide"}],
           bars: [
             { cls:"b-blocked", s:new Date(2026,2,22), e:new Date(2026,3,10), dl:new Date(2026,3,27), ddc:"dd-red" },
           ],
@@ -421,6 +511,8 @@
         {
           name: "Quiz Student",
           sub:  "880 · 0/6, all blocked",
+          milestone: "beta",
+          tickets: [{k:"LMSV3-880",s:"Quiz Student (parent)"},{k:"LMSV3-883",s:"Shared QuizShell component"},{k:"LMSV3-884",s:"Consolidate quiz-lab variants"},{k:"LMSV3-885",s:"Brand token colors"},{k:"LMSV3-886",s:"Skeleton loaders"},{k:"LMSV3-887",s:"Per-answer feedback toggle"},{k:"LMSV3-888",s:"displayMode setting"}],
           bars: [
             { cls:"b-blocked", s:new Date(2026,3,10), e:new Date(2026,3,24), dl:new Date(2026,3,27), ddc:"dd-red" },
           ],
@@ -433,6 +525,8 @@
         {
           name: "Migration pipeline — 7 batches",
           sub:  "1020–1035 · 7 review, 9 TODO",
+          milestone: "ga",
+          tickets: [{k:"LMSV3-1019",s:"ThriveCart Integration (parent)"},{k:"LMSV3-1020",s:"Grant queue processing"},{k:"LMSV3-1022",s:"Product-mapping service"},{k:"LMSV3-1025",s:"Enrollment service"},{k:"LMSV3-1026",s:"Webhook endpoint"},{k:"LMSV3-1027",s:"Idempotent event processing"},{k:"LMSV3-1035",s:"Master migration script"}],
           bars: [
             { cls:"b-alpha2", s:new Date(2026,2,26), e:new Date(2026,3,16), dl:new Date(2026,4,25), ddc:"dd-purple" },
           ],
@@ -455,6 +549,25 @@
     return diff + "d left";
   }
   function parseDate(val) { const p = val.split("-").map(Number); return new Date(p[0], p[1]-1, p[2], 12, 0, 0); }
+
+  function openTicketModal(title, tickets) {
+    document.getElementById("modal-title").textContent = title;
+    const linksEl = document.getElementById("modal-links");
+    linksEl.innerHTML = tickets.map(t =>
+      `<a href="${JIRA_BASE}${t.k}" target="_blank"><span class="tk-key">${t.k}</span><span class="tk-summary">${t.s}</span></a>`
+    ).join("");
+    document.getElementById("ticket-modal-overlay").classList.add("open");
+  }
+
+  document.getElementById("modal-close").addEventListener("click", function() {
+    document.getElementById("ticket-modal-overlay").classList.remove("open");
+  });
+  document.getElementById("ticket-modal-overlay").addEventListener("click", function(e) {
+    if (e.target === this) this.classList.remove("open");
+  });
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") document.getElementById("ticket-modal-overlay").classList.remove("open");
+  });
 
   function buildAxis() {
     const el = document.getElementById("month-axis");
@@ -509,14 +622,30 @@
     });
 
     GROUPS.forEach(group => {
+      const filteredRows = activeFilter === "all"
+        ? group.rows
+        : group.rows.filter(r => r.milestone === activeFilter);
+      if (filteredRows.length === 0) return;
+
       const gl = document.createElement("div");
       gl.className = "grp-label"; gl.textContent = group.label;
       canvas.appendChild(gl);
 
-      group.rows.forEach(row => {
+      filteredRows.forEach(row => {
         const rowEl = document.createElement("div"); rowEl.className = "row";
         const labelEl = document.createElement("div"); labelEl.className = "row-label";
-        labelEl.innerHTML = `<div class="row-name">${row.name}</div><div class="row-sub">${row.sub}</div>`;
+        const hasTickets = row.tickets && row.tickets.length > 0;
+        const nameClass = hasTickets ? "row-name clickable" : "row-name";
+        labelEl.innerHTML = `<div class="${nameClass}">${row.name}</div><div class="row-sub">${row.sub}</div>`;
+        if (hasTickets) {
+          labelEl.querySelector(".row-name").addEventListener("click", function() {
+            if (row.tickets.length === 1) {
+              window.open(JIRA_BASE + row.tickets[0].k, "_blank");
+            } else {
+              openTicketModal(row.name, row.tickets);
+            }
+          });
+        }
         rowEl.appendChild(labelEl);
 
         const track = document.createElement("div"); track.className = "track";
@@ -576,6 +705,7 @@
   }
 
   let showPlanned = true;
+  let activeFilter = "all";
 
   document.getElementById("last-updated").textContent = new Date().toLocaleDateString("en-GB", { day:"numeric", month:"long", year:"numeric" });
   buildAxis();
@@ -583,6 +713,15 @@
   pickerEl.value = "2026-03-26";
   updateDate("2026-03-26");
   pickerEl.addEventListener("change", function() { updateDate(this.value); });
+
+  document.querySelectorAll(".filter-pill").forEach(pill => {
+    pill.addEventListener("click", function() {
+      document.querySelectorAll(".filter-pill").forEach(p => p.classList.remove("active"));
+      this.classList.add("active");
+      activeFilter = this.dataset.filter;
+      updateDate(pickerEl.value);
+    });
+  });
 
   document.getElementById("planned-toggle").addEventListener("click", function() {
     showPlanned = !showPlanned;
