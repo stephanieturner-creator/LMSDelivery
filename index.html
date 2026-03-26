@@ -12,7 +12,6 @@
       --bg: #ffffff; --bg-secondary: #f7f7f5; --bg-row-alt: rgba(0,0,0,0.02);
       --border: rgba(0,0,0,0.10); --border-mid: rgba(0,0,0,0.22);
       --text-primary: #1a1a18; --text-secondary: #5f5e5a; --text-tertiary: #888780;
-      --planned-bg: rgba(0,0,0,0.04); --planned-border: rgba(0,0,0,0.18);
       --radius-sm: 4px; --radius-md: 8px; --lh: 36px;
     }
     @media (prefers-color-scheme: dark) {
@@ -20,26 +19,19 @@
         --bg: #1a1a18; --bg-secondary: #242422; --bg-row-alt: rgba(255,255,255,0.025);
         --border: rgba(255,255,255,0.10); --border-mid: rgba(255,255,255,0.22);
         --text-primary: #f0ede8; --text-secondary: #b4b2a9; --text-tertiary: #888780;
-        --planned-bg: rgba(255,255,255,0.06); --planned-border: rgba(255,255,255,0.25);
       }
     }
     body { font-family: var(--font); background: var(--bg); color: var(--text-primary); padding: 2rem 1.5rem 3rem; min-width: 820px; }
 
     .header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:1.5rem; }
     .header-left h1 { font-size:17px; font-weight:600; color:var(--text-primary); margin-bottom:3px; }
-    .header-left p  { font-size:12px; color:var(--text-secondary); }
+    .header-left p  { font-size:12px; color:#8B7420; background:#FEF7E8; border:0.5px solid #E8D5A0; display:inline-block; padding:3px 10px; border-radius:var(--radius-sm); margin-top:4px; }
+    @media (prefers-color-scheme: dark) { .header-left p { color:#D4B84A; background:rgba(250,199,117,0.1); border-color:rgba(250,199,117,0.25); } }
     .header-controls { display:flex; align-items:center; gap:10px; }
     .date-control { display:flex; align-items:center; gap:8px; background:var(--bg-secondary); border:0.5px solid var(--border-mid); border-radius:var(--radius-md); padding:6px 12px; }
     .date-control label { font-size:11px; color:var(--text-secondary); white-space:nowrap; }
     .date-control input[type="date"] { font-family:var(--font); font-size:12px; font-weight:500; color:var(--text-primary); background:transparent; border:none; outline:none; cursor:pointer; }
     .date-badge { font-size:12px; font-weight:600; color:var(--today-color); min-width:56px; }
-    .toggle-control { display:flex; align-items:center; gap:6px; background:var(--bg-secondary); border:0.5px solid var(--border-mid); border-radius:var(--radius-md); padding:6px 12px; cursor:pointer; user-select:none; }
-    .toggle-control:hover { border-color: var(--text-tertiary); }
-    .toggle-control span { font-size:11px; color:var(--text-secondary); white-space:nowrap; }
-    .toggle-switch { position:relative; width:28px; height:16px; border-radius:8px; background:var(--border-mid); transition:background 0.2s; flex-shrink:0; }
-    .toggle-switch::after { content:''; position:absolute; top:2px; left:2px; width:12px; height:12px; border-radius:50%; background:var(--bg); transition:transform 0.2s; }
-    .toggle-switch.on { background:var(--text-tertiary); }
-    .toggle-switch.on::after { transform:translateX(12px); }
 
     .month-axis { position:relative; margin-left:220px; height:26px; border-bottom:0.5px solid var(--border); margin-bottom:0; }
     .month-cell { position:absolute; top:0; bottom:0; display:flex; align-items:center; padding-left:6px; border-left:0.5px solid var(--border); overflow:hidden; }
@@ -78,8 +70,7 @@
     .b-beta    { background:#B5D4F4; } .b-beta    .bar-label { color:#042C53; }
     .b-ga      { background:#CECBF6; } .b-ga      .bar-label { color:#26215C; }
 
-    .b-planned { background: var(--planned-bg); border: 1.5px dashed var(--planned-border); height:18px !important; }
-    .b-planned .bar-label { color: var(--text-tertiary); font-weight:400; font-style:italic; font-size:9px; }
+
 
     .dd { position:absolute; top:50%; transform:translate(-50%,-50%); width:9px; height:9px; border-radius:50%; z-index:4; }
     .dd-red    { background:#A32D2D; border:1.5px solid #791F1F; }
@@ -138,17 +129,13 @@
   <div class="header">
     <div class="header-left">
       <h1>LearnV3 — Release &amp; Delivery Timeline</h1>
-      <p>Cross-referenced from Jira LMSV3 &amp; GitHub thrivecart/LearnV3 · planned vs actual · adjust date to move today line</p>
+      <p>This release schedule is scoped to Beta, and subject to user testing feedback. Post-GA iterations are TBC.</p>
     </div>
     <div class="header-controls">
       <div class="date-control">
         <label for="date-picker">Today</label>
         <input type="date" id="date-picker" value="2026-03-26" />
         <span class="date-badge" id="date-badge">26 Mar</span>
-      </div>
-      <div class="toggle-control" id="planned-toggle">
-        <span>Planned</span>
-        <div class="toggle-switch on" id="planned-switch"></div>
       </div>
     </div>
   </div>
@@ -180,17 +167,13 @@
     <div class="legend-item"><div class="legend-swatch" style="background:#9FE1CB"></div>QA</div>
     <div class="legend-item"><div class="legend-swatch" style="background:#85B7EB"></div>Active</div>
     <div class="legend-item">
-      <div class="legend-swatch" style="background:var(--planned-bg); border:1.5px dashed var(--planned-border)"></div>
-      Planned
-    </div>
-    <div class="legend-item">
       <svg width="10" height="10" style="flex-shrink:0"><circle cx="5" cy="5" r="4" fill="#A32D2D" stroke="#791F1F" stroke-width="1.5"/></svg>
       Deadline
     </div>
   </div>
 
   <div class="footer">
-    Last updated: <span id="last-updated"></span> &nbsp;·&nbsp; Jira LMSV3 + GitHub thrivecart/LearnV3 &nbsp;·&nbsp; <code>index-original.html</code> preserved for comparison
+    Last updated: <span id="last-updated"></span> &nbsp;·&nbsp; Jira LMSV3 + GitHub thrivecart/LearnV3
   </div>
 
 <div class="ticket-modal-overlay" id="ticket-modal-overlay">
@@ -224,7 +207,7 @@
           milestone: "done",
           tickets: [{k:"LMSV3-602",s:"Schema migrations"},{k:"LMSV3-603",s:"Backfill existing communities"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,0,6), e:new Date(2026,1,14), label:"Planned" },
+
             { cls:"b-done", s:new Date(2026,2,11), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
           ],
         },
@@ -234,7 +217,7 @@
           milestone: "alpha",
           tickets: [{k:"LMSV3-604",s:"Analytics service"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,1,2), e:new Date(2026,2,7), label:"Planned" },
+
             { cls:"b-blocked", s:new Date(2026,2,26), e:new Date(2026,3,10), dl:new Date(2026,3,14), ddc:"dd-gray" },
           ],
         },
@@ -244,7 +227,7 @@
           milestone: "done",
           tickets: [{k:"LMSV3-605",s:"Color/brand utilities"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,1,2), e:new Date(2026,2,7), label:"Planned" },
+
             { cls:"b-done", s:new Date(2026,2,12), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
           ],
         },
@@ -259,7 +242,7 @@
           milestone: "done",
           tickets: [{k:"LMSV3-606",s:"Creator opens wizard, enters name"},{k:"LMSV3-607",s:"Creator selects access model"},{k:"LMSV3-608",s:"Creator configures branding"},{k:"LMSV3-609",s:"Creator reviews and confirms"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,1,2), e:new Date(2026,2,28), label:"Planned" },
+
             { cls:"b-done", s:new Date(2026,2,12), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
           ],
         },
@@ -269,7 +252,7 @@
           milestone: "done",
           tickets: [{k:"LMSV3-610",s:"Resume abandoned wizard"},{k:"LMSV3-611",s:"Brand theme applied to views"},{k:"LMSV3-612",s:"Old creation form deprecated"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,2,2), e:new Date(2026,2,28), label:"Planned" },
+
             { cls:"b-done", s:new Date(2026,2,13), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
           ],
         },
@@ -284,7 +267,7 @@
           milestone: "done",
           tickets: [{k:"LMSV3-613",s:"Checklist in sidebar after wizard"},{k:"LMSV3-614",s:"Complete and skip checklist tasks"},{k:"LMSV3-615",s:"Go Live confirmation with blocker check"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,2,2), e:new Date(2026,2,28), label:"Planned" },
+
             { cls:"b-done", s:new Date(2026,2,13), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
           ],
         },
@@ -299,7 +282,7 @@
           milestone: "done",
           tickets: [{k:"LMSV3-616",s:"Student joins public community"},{k:"LMSV3-617",s:"Creator updates access model"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,1,16), e:new Date(2026,2,14), label:"Planned" },
+
             { cls:"b-done", s:new Date(2026,2,11), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
           ],
         },
@@ -309,7 +292,7 @@
           milestone: "alpha",
           tickets: [{k:"LMSV3-618",s:"Student requests free-private access"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,2,17), e:new Date(2026,3,4), label:"Planned" },
+
             { cls:"b-atrisk", s:new Date(2026,2,13), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
         },
@@ -319,7 +302,7 @@
           milestone: "alpha",
           tickets: [{k:"LMSV3-619",s:"Creator manages access requests"},{k:"LMSV3-620",s:"Student joins with invite code"},{k:"LMSV3-621",s:"Creator manages invite codes"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,2,17), e:new Date(2026,3,4), label:"Planned" },
+
             { cls:"b-blocked", s:new Date(2026,2,11), e:new Date(2026,2,15), dl:new Date(2026,2,30), ddc:"dd-red" },
             { cls:"b-alpha",   s:new Date(2026,2,15), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
@@ -335,7 +318,7 @@
           milestone: "done",
           tickets: [{k:"LMSV3-622",s:"Creator applies gamification preset"},{k:"LMSV3-623",s:"Preset override warns and preserves"},{k:"LMSV3-624",s:"Verify preview mode"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,2,17), e:new Date(2026,2,29), label:"Planned" },
+
             { cls:"b-done", s:new Date(2026,2,14), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
           ],
         },
@@ -345,7 +328,7 @@
           milestone: "done",
           tickets: [{k:"LMSV3-625",s:"Creator goes live"},{k:"LMSV3-626",s:"Creator takes community offline"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,2,23), e:new Date(2026,2,29), label:"Planned" },
+
             { cls:"b-done", s:new Date(2026,2,15), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
           ],
         },
@@ -360,7 +343,7 @@
           milestone: "alpha",
           tickets: [{k:"LMSV3-627",s:"Verify universal account across communities"},{k:"LMSV3-628",s:"Cross-community progress dashboard"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,3,2), e:new Date(2026,3,13), label:"Planned" },
+
             { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
         },
@@ -375,7 +358,7 @@
           milestone: "alpha",
           tickets: [{k:"LMSV3-629",s:"Onboarding overlay on first visit"},{k:"LMSV3-630",s:"Profile card (+50 pts)"},{k:"LMSV3-631",s:"Goals card (+25 pts)"},{k:"LMSV3-632",s:"Tour card (+25 pts)"},{k:"LMSV3-633",s:"First Action card (+100 pts)"},{k:"LMSV3-634",s:"Completion summary with badge"},{k:"LMSV3-635",s:"Dismiss and resume onboarding"},{k:"LMSV3-636",s:"Second community fresh onboarding"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,3,2), e:new Date(2026,3,13), label:"Planned" },
+
             { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
         },
@@ -390,7 +373,7 @@
           milestone: "alpha2",
           tickets: [{k:"LMSV3-637",s:"Define platform badge criteria"},{k:"LMSV3-638",s:"Badge auto-award triggers"},{k:"LMSV3-639",s:"Badge display on profile"},{k:"LMSV3-640",s:"Level-up notification"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,3,7), e:new Date(2026,3,21), label:"Planned" },
+
             { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,3,14), dl:new Date(2026,3,14), ddc:"dd-blue" },
           ],
         },
@@ -407,7 +390,7 @@
           milestone: "alpha",
           tickets: [{k:"LMSV3-713",s:"Spike on Bunny.net asset segmentation"},{k:"LMSV3-994",s:"Backend provider abstraction (Bunny/Piktochart)"}],
           bars: [
-            { cls:"b-planned", s:new Date(2026,2,24), e:new Date(2026,3,4), label:"Planned" },
+
             { cls:"b-alpha2", s:new Date(2026,2,13), e:new Date(2026,3,4), dl:new Date(2026,3,4), ddc:"dd-amber" },
           ],
         },
@@ -417,7 +400,7 @@
           milestone: "ga",
           tickets: [],
           bars: [
-            { cls:"b-planned", s:new Date(2026,2,5), e:new Date(2026,3,4), label:"Planned" },
+
             { cls:"b-blocked", s:new Date(2026,2,5), e:new Date(2026,2,16), dl:new Date(2026,4,11), ddc:"dd-gray" },
           ],
         },
@@ -497,24 +480,24 @@
       ],
     },
     {
-      label: "Quiz · 869 + 880 · 18 stories",
+      label: "Quiz UI/UX Rework · 869 + 880 · 18 stories",
       rows: [
         {
-          name: "Quiz Creator",
-          sub:  "869 · 1/12 Done, 10 blocked",
+          name: "Creator — inline card editing, icons, rich text",
+          sub:  "869 · UI rework · 2 PRs merged, Jira statuses stale",
           milestone: "beta",
           tickets: [{k:"LMSV3-869",s:"Quiz Creator (parent)"},{k:"LMSV3-870",s:"Inline card-based editing"},{k:"LMSV3-871",s:"Rich text editing"},{k:"LMSV3-872",s:"AI quiz generator"},{k:"LMSV3-873",s:"Visual question type selector"},{k:"LMSV3-874",s:"Replace inline SVGs with Lucide"}],
           bars: [
-            { cls:"b-blocked", s:new Date(2026,2,22), e:new Date(2026,3,10), dl:new Date(2026,3,27), ddc:"dd-red" },
+            { cls:"b-atrisk", s:new Date(2026,2,22), e:new Date(2026,3,27), dl:new Date(2026,3,27), ddc:"dd-amber" },
           ],
         },
         {
-          name: "Quiz Student",
-          sub:  "880 · 0/6, all blocked",
+          name: "Student — consolidate 9 variants to 4 modes",
+          sub:  "880 · UI rework · tech debt cleanup, not started",
           milestone: "beta",
           tickets: [{k:"LMSV3-880",s:"Quiz Student (parent)"},{k:"LMSV3-883",s:"Shared QuizShell component"},{k:"LMSV3-884",s:"Consolidate quiz-lab variants"},{k:"LMSV3-885",s:"Brand token colors"},{k:"LMSV3-886",s:"Skeleton loaders"},{k:"LMSV3-887",s:"Per-answer feedback toggle"},{k:"LMSV3-888",s:"displayMode setting"}],
           bars: [
-            { cls:"b-blocked", s:new Date(2026,3,10), e:new Date(2026,3,24), dl:new Date(2026,3,27), ddc:"dd-red" },
+            { cls:"b-blocked", s:new Date(2026,3,10), e:new Date(2026,3,27), dl:new Date(2026,3,27), ddc:"dd-gray" },
           ],
         },
       ],
@@ -529,6 +512,163 @@
           tickets: [{k:"LMSV3-1019",s:"ThriveCart Integration (parent)"},{k:"LMSV3-1020",s:"Grant queue processing"},{k:"LMSV3-1022",s:"Product-mapping service"},{k:"LMSV3-1025",s:"Enrollment service"},{k:"LMSV3-1026",s:"Webhook endpoint"},{k:"LMSV3-1027",s:"Idempotent event processing"},{k:"LMSV3-1035",s:"Master migration script"}],
           bars: [
             { cls:"b-alpha2", s:new Date(2026,2,26), e:new Date(2026,3,16), dl:new Date(2026,4,25), ddc:"dd-purple" },
+          ],
+        },
+      ],
+    },
+    /* ── Alpha Gaps (in progress, not individually tracked) ───── */
+    {
+      label: "Alpha Gaps — In Progress",
+      rows: [
+        {
+          name: "Lesson discussion integration",
+          sub:  "971 · PRD — lesson-level thread linkage needed",
+          milestone: "alpha",
+          tickets: [{k:"LMSV3-971",s:"Reply-to-question linkage in course discussions"}],
+          bars: [
+            { cls:"b-atrisk", s:new Date(2026,2,26), e:new Date(2026,3,13), dl:new Date(2026,3,13), ddc:"dd-amber" },
+          ],
+        },
+        {
+          name: "Leaderboard enhancements",
+          sub:  "20 (epic) · Core done, filters + visibility in PRD",
+          milestone: "alpha",
+          tickets: [{k:"LMSV3-20",s:"Leaderboard UI (Widget & Full Page)"},{k:"LMSV3-532",s:"Leaderboard & Badges UI polish"},{k:"LMSV3-829",s:"Missing filters: Engagement, Leaderboard, Points"}],
+          bars: [
+            { cls:"b-done", s:new Date(2026,2,3), e:new Date(2026,2,20), dl:new Date(2026,2,20), ddc:"dd-green" },
+            { cls:"b-atrisk", s:new Date(2026,2,20), e:new Date(2026,3,13), dl:new Date(2026,3,13), ddc:"dd-amber" },
+          ],
+        },
+        {
+          name: "Notification center",
+          sub:  "31 (epic) · Toasts done, full center in PRD",
+          milestone: "alpha",
+          tickets: [{k:"LMSV3-31",s:"Notification Center & Toasts"},{k:"LMSV3-640",s:"Level-up notification"},{k:"LMSV3-972",s:"In-app pop-up notifications"}],
+          bars: [
+            { cls:"b-done", s:new Date(2026,2,15), e:new Date(2026,2,20), dl:new Date(2026,2,20), ddc:"dd-green" },
+            { cls:"b-atrisk", s:new Date(2026,2,26), e:new Date(2026,3,13), dl:new Date(2026,3,13), ddc:"dd-amber" },
+          ],
+        },
+      ],
+    },
+
+    /* ── Beta — Enhanced Features (from Confluence, no tickets) ─ */
+    {
+      label: "Beta — Enhanced Features (from release schedule)",
+      rows: [
+        {
+          name: "Real-time notifications",
+          sub:  "No Jira ticket · planned for Beta",
+          milestone: "beta",
+          tickets: [],
+          bars: [
+            { cls:"b-beta", s:new Date(2026,3,27), e:new Date(2026,4,18), dl:new Date(2026,4,18), ddc:"dd-purple" },
+          ],
+        },
+        {
+          name: "Community-wide search",
+          sub:  "No Jira ticket · planned for Beta",
+          milestone: "beta",
+          tickets: [],
+          bars: [
+            { cls:"b-beta", s:new Date(2026,3,27), e:new Date(2026,4,18), dl:new Date(2026,4,18), ddc:"dd-purple" },
+          ],
+        },
+        {
+          name: "Community types (course/membership/free)",
+          sub:  "No Jira ticket · planned for Beta",
+          milestone: "beta",
+          tickets: [],
+          bars: [
+            { cls:"b-beta", s:new Date(2026,3,27), e:new Date(2026,4,18), dl:new Date(2026,4,18), ddc:"dd-purple" },
+          ],
+        },
+        {
+          name: "Basic analytics",
+          sub:  "No Jira ticket · planned for Beta",
+          milestone: "beta",
+          tickets: [],
+          bars: [
+            { cls:"b-beta", s:new Date(2026,3,27), e:new Date(2026,4,18), dl:new Date(2026,4,18), ddc:"dd-purple" },
+          ],
+        },
+        {
+          name: "Performance-based unlocking",
+          sub:  "No Jira ticket · pass quiz to continue",
+          milestone: "beta",
+          tickets: [],
+          bars: [
+            { cls:"b-beta", s:new Date(2026,3,27), e:new Date(2026,4,18), dl:new Date(2026,4,18), ddc:"dd-purple" },
+          ],
+        },
+        {
+          name: "Completion bonuses + certificate triggers",
+          sub:  "No Jira ticket · planned for Beta",
+          milestone: "beta",
+          tickets: [],
+          bars: [
+            { cls:"b-beta", s:new Date(2026,3,27), e:new Date(2026,4,18), dl:new Date(2026,4,18), ddc:"dd-purple" },
+          ],
+        },
+      ],
+    },
+
+    /* ── GA — Commerce & Integration (from Confluence) ─────────── */
+    {
+      label: "GA — Commerce & Integration (from release schedule)",
+      rows: [
+        {
+          name: "Billing integration (ThrivePay)",
+          sub:  "No Jira ticket · needs payments unblocked",
+          milestone: "ga",
+          tickets: [],
+          bars: [
+            { cls:"b-ga", s:new Date(2026,4,11), e:new Date(2026,5,7), dl:new Date(2026,5,7), ddc:"dd-purple" },
+          ],
+        },
+        {
+          name: "Upsells",
+          sub:  "No Jira ticket · post-billing",
+          milestone: "ga",
+          tickets: [],
+          bars: [
+            { cls:"b-ga", s:new Date(2026,4,18), e:new Date(2026,5,7), dl:new Date(2026,5,7), ddc:"dd-purple" },
+          ],
+        },
+        {
+          name: "ThriveCampaign integration",
+          sub:  "No Jira ticket · planned for GA",
+          milestone: "ga",
+          tickets: [],
+          bars: [
+            { cls:"b-ga", s:new Date(2026,4,18), e:new Date(2026,5,7), dl:new Date(2026,5,7), ddc:"dd-purple" },
+          ],
+        },
+        {
+          name: "Events (live sessions, Q&A, workshops)",
+          sub:  "No Jira ticket · planned for GA",
+          milestone: "ga",
+          tickets: [],
+          bars: [
+            { cls:"b-ga", s:new Date(2026,4,25), e:new Date(2026,5,7), dl:new Date(2026,5,7), ddc:"dd-purple" },
+          ],
+        },
+        {
+          name: "Enhanced analytics",
+          sub:  "No Jira ticket · planned for GA",
+          milestone: "ga",
+          tickets: [],
+          bars: [
+            { cls:"b-ga", s:new Date(2026,4,25), e:new Date(2026,5,7), dl:new Date(2026,5,7), ddc:"dd-purple" },
+          ],
+        },
+        {
+          name: "Study groups",
+          sub:  "No Jira ticket · planned for GA",
+          milestone: "ga",
+          tickets: [],
+          bars: [
+            { cls:"b-ga", s:new Date(2026,4,25), e:new Date(2026,5,7), dl:new Date(2026,5,7), ddc:"dd-purple" },
           ],
         },
       ],
@@ -650,8 +790,6 @@
 
         const track = document.createElement("div"); track.className = "track";
         row.bars.forEach(b => {
-          /* Skip planned bars if toggle is off */
-          if (b.cls === "b-planned" && !showPlanned) return;
 
           const left = pct(b.s), width = Math.max(1.5, pct(b.e) - pct(b.s));
           const bar = document.createElement("div");
@@ -704,7 +842,6 @@
     buildCanvas(today);
   }
 
-  let showPlanned = true;
   let activeFilter = "all";
 
   document.getElementById("last-updated").textContent = new Date().toLocaleDateString("en-GB", { day:"numeric", month:"long", year:"numeric" });
@@ -723,11 +860,6 @@
     });
   });
 
-  document.getElementById("planned-toggle").addEventListener("click", function() {
-    showPlanned = !showPlanned;
-    document.getElementById("planned-switch").classList.toggle("on", showPlanned);
-    updateDate(pickerEl.value);
-  });
 </script>
 </body>
 </html>
