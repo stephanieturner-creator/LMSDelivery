@@ -3,22 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Communities — Release &amp; Testing Timeline</title>
+  <title>LearnV3 — Release &amp; Delivery Timeline</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --today-color: #E24B4A;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --bg: #ffffff; --bg-secondary: #f7f7f5;
-      --border: rgba(0,0,0,0.12); --border-mid: rgba(0,0,0,0.22);
+      --bg: #ffffff; --bg-secondary: #f7f7f5; --bg-row-alt: rgba(0,0,0,0.02);
+      --border: rgba(0,0,0,0.10); --border-mid: rgba(0,0,0,0.22);
       --text-primary: #1a1a18; --text-secondary: #5f5e5a; --text-tertiary: #888780;
-      --radius-sm: 4px; --radius-md: 8px; --lh: 28px;
+      --planned-bg: rgba(0,0,0,0.04); --planned-border: rgba(0,0,0,0.18);
+      --radius-sm: 4px; --radius-md: 8px; --lh: 36px;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #1a1a18; --bg-secondary: #242422;
-        --border: rgba(255,255,255,0.12); --border-mid: rgba(255,255,255,0.22);
+        --bg: #1a1a18; --bg-secondary: #242422; --bg-row-alt: rgba(255,255,255,0.025);
+        --border: rgba(255,255,255,0.10); --border-mid: rgba(255,255,255,0.22);
         --text-primary: #f0ede8; --text-secondary: #b4b2a9; --text-tertiary: #888780;
+        --planned-bg: rgba(255,255,255,0.06); --planned-border: rgba(255,255,255,0.25);
       }
     }
     body { font-family: var(--font); background: var(--bg); color: var(--text-primary); padding: 2rem 1.5rem 3rem; min-width: 820px; }
@@ -26,15 +28,23 @@
     .header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:1.5rem; }
     .header-left h1 { font-size:17px; font-weight:600; color:var(--text-primary); margin-bottom:3px; }
     .header-left p  { font-size:12px; color:var(--text-secondary); }
+    .header-controls { display:flex; align-items:center; gap:10px; }
     .date-control { display:flex; align-items:center; gap:8px; background:var(--bg-secondary); border:0.5px solid var(--border-mid); border-radius:var(--radius-md); padding:6px 12px; }
     .date-control label { font-size:11px; color:var(--text-secondary); white-space:nowrap; }
     .date-control input[type="date"] { font-family:var(--font); font-size:12px; font-weight:500; color:var(--text-primary); background:transparent; border:none; outline:none; cursor:pointer; }
     .date-badge { font-size:12px; font-weight:600; color:var(--today-color); min-width:56px; }
+    .toggle-control { display:flex; align-items:center; gap:6px; background:var(--bg-secondary); border:0.5px solid var(--border-mid); border-radius:var(--radius-md); padding:6px 12px; cursor:pointer; user-select:none; }
+    .toggle-control:hover { border-color: var(--text-tertiary); }
+    .toggle-control span { font-size:11px; color:var(--text-secondary); white-space:nowrap; }
+    .toggle-switch { position:relative; width:28px; height:16px; border-radius:8px; background:var(--border-mid); transition:background 0.2s; flex-shrink:0; }
+    .toggle-switch::after { content:''; position:absolute; top:2px; left:2px; width:12px; height:12px; border-radius:50%; background:var(--bg); transition:transform 0.2s; }
+    .toggle-switch.on { background:var(--text-tertiary); }
+    .toggle-switch.on::after { transform:translateX(12px); }
 
-    .month-axis { position:relative; margin-left:200px; height:26px; border-bottom:0.5px solid var(--border); margin-bottom:0; }
+    .month-axis { position:relative; margin-left:220px; height:26px; border-bottom:0.5px solid var(--border); margin-bottom:0; }
     .month-cell { position:absolute; top:0; bottom:0; display:flex; align-items:center; padding-left:6px; border-left:0.5px solid var(--border); overflow:hidden; }
     .month-cell span { font-size:11px; font-weight:500; color:var(--text-secondary); white-space:nowrap; }
-    .axis-phases { position:relative; height:24px; margin-left:200px; margin-bottom:4px; }
+    .axis-phases { position:relative; height:24px; margin-left:220px; margin-bottom:4px; }
 
     .phase-band { position:absolute; top:3px; height:18px; border-radius:var(--radius-sm); display:flex; align-items:center; overflow:hidden; }
     .phase-band span { font-size:9.5px; font-weight:500; white-space:nowrap; padding:0 6px; overflow:hidden; text-overflow:ellipsis; }
@@ -44,18 +54,20 @@
     .pb-ga     { background:#FEF7E8; border:0.5px solid #FAC775; } .pb-ga     span { color:#633806; }
 
     .canvas { position:relative; }
-    .grp-label { font-size:10px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.05em; padding:10px 0 3px; border-top:0.5px solid var(--border); margin-top:6px; }
+    .chart-overlay { position:absolute; top:0; bottom:0; left:220px; right:0; pointer-events:none; z-index:1; }
+    .grp-label { font-size:10px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.05em; padding:12px 0 4px; border-top:1px solid var(--border); margin-top:4px; }
     .grp-label:first-child { border-top:none; margin-top:0; }
 
     .row { display:flex; align-items:center; border-bottom:0.5px solid var(--border); min-height:var(--lh); }
+    .row:nth-child(even) { background: var(--bg-row-alt); }
     .row:last-child { border-bottom:none; }
-    .row-label { width:200px; min-width:200px; padding-right:12px; padding-top:3px; padding-bottom:3px; }
-    .row-name  { font-size:11.5px; font-weight:500; color:var(--text-primary); line-height:1.3; }
+    .row-label { width:220px; min-width:220px; padding:4px 10px 4px 0; }
+    .row-name  { font-size:12px; font-weight:500; color:var(--text-primary); line-height:1.35; }
     .row-sub   { font-size:10px; color:var(--text-secondary); line-height:1.3; margin-top:1px; }
 
     .track { flex:1; position:relative; height:var(--lh); }
-    .bar { position:absolute; top:50%; transform:translateY(-50%); height:16px; border-radius:var(--radius-sm); overflow:hidden; display:flex; align-items:center; }
-    .bar-label { font-size:9.5px; padding:0 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .bar { position:absolute; top:50%; transform:translateY(-50%); height:20px; border-radius:var(--radius-sm); overflow:hidden; display:flex; align-items:center; }
+    .bar-label { font-size:10px; font-weight:500; padding:0 7px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
     .b-done    { background:#5DCAA5; } .b-done    .bar-label { color:#04342C; }
     .b-urgent  { background:#F09595; } .b-urgent  .bar-label { color:#501313; }
@@ -66,7 +78,10 @@
     .b-beta    { background:#B5D4F4; } .b-beta    .bar-label { color:#042C53; }
     .b-ga      { background:#CECBF6; } .b-ga      .bar-label { color:#26215C; }
 
-    .dd { position:absolute; top:50%; transform:translate(-50%,-50%); width:8px; height:8px; border-radius:50%; z-index:4; }
+    .b-planned { background: var(--planned-bg); border: 1.5px dashed var(--planned-border); height:18px !important; }
+    .b-planned .bar-label { color: var(--text-tertiary); font-weight:400; font-style:italic; font-size:9px; }
+
+    .dd { position:absolute; top:50%; transform:translate(-50%,-50%); width:9px; height:9px; border-radius:50%; z-index:4; }
     .dd-red    { background:#A32D2D; border:1.5px solid #791F1F; }
     .dd-amber  { background:#BA7517; border:1.5px solid #633806; }
     .dd-green  { background:#0F6E56; border:1.5px solid #04342C; }
@@ -82,27 +97,33 @@
     .flag-beta   .flag-pole { background:#7F77DD; } .flag-beta   .flag-head { background:#EEEDFE; color:#3C3489; border:0.5px solid #AFA9EC; }
     .flag-ga     .flag-pole { background:#BA7517; } .flag-ga     .flag-head { background:#FEF7E8; color:#633806; border:0.5px solid #FAC775; }
 
-    .today-overlay { position:absolute; top:0; bottom:0; left:0; background:rgba(226,75,74,0.05); border-right:1.5px solid var(--today-color); pointer-events:none; z-index:1; }
-    .today-line    { position:absolute; top:0; bottom:0; width:2px; background:var(--today-color); z-index:10; pointer-events:none; }
+    .today-overlay { position:absolute; top:0; bottom:0; left:0; background:rgba(226,75,74,0.05); border-right:1.5px solid var(--today-color); pointer-events:none; }
+    .today-line    { position:absolute; top:0; bottom:0; width:2px; background:var(--today-color); z-index:10; }
     .today-pin     { position:absolute; top:-6px; left:50%; transform:translateX(-50%); width:8px; height:8px; border-radius:50%; background:var(--today-color); }
 
-    .legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:1.25rem; margin-left:200px; }
+    .legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:1.25rem; margin-left:220px; }
     .legend-item { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--text-secondary); }
     .legend-swatch { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
-    .footer { margin-top:2rem; margin-left:200px; font-size:10px; color:var(--text-tertiary); border-top:0.5px solid var(--border); padding-top:10px; }
+    .footer { margin-top:2rem; margin-left:220px; font-size:10px; color:var(--text-tertiary); border-top:0.5px solid var(--border); padding-top:10px; }
   </style>
 </head>
 <body>
 
   <div class="header">
     <div class="header-left">
-      <h1>Communities — Release &amp; Testing Timeline</h1>
-      <p>Epics correlated with test phases · drop-dead dates · adjust the date to move the today line</p>
+      <h1>LearnV3 — Release &amp; Delivery Timeline</h1>
+      <p>Cross-referenced from Jira LMSV3 &amp; GitHub thrivecart/LearnV3 · planned vs actual · adjust date to move today line</p>
     </div>
-    <div class="date-control">
-      <label for="date-picker">Today</label>
-      <input type="date" id="date-picker" value="2026-03-26" />
-      <span class="date-badge" id="date-badge">26 Mar</span>
+    <div class="header-controls">
+      <div class="date-control">
+        <label for="date-picker">Today</label>
+        <input type="date" id="date-picker" value="2026-03-26" />
+        <span class="date-badge" id="date-badge">26 Mar</span>
+      </div>
+      <div class="toggle-control" id="planned-toggle">
+        <span>Planned</span>
+        <div class="toggle-switch on" id="planned-switch"></div>
+      </div>
     </div>
   </div>
 
@@ -117,231 +138,311 @@
 
   <div class="legend">
     <div class="legend-item"><div class="legend-swatch" style="background:#5DCAA5"></div>Done</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#F09595"></div>Urgent / overdue</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#F09595"></div>Urgent</div>
     <div class="legend-item"><div class="legend-swatch" style="background:#FAC775"></div>At risk</div>
     <div class="legend-item"><div class="legend-swatch" style="background:#D3D1C7"></div>Blocked</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#9FE1CB"></div>Alpha</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#85B7EB"></div>Alpha 2</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#B5D4F4"></div>Beta</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#CECBF6"></div>GA</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#9FE1CB"></div>QA</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#85B7EB"></div>Active</div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:var(--planned-bg); border:1.5px dashed var(--planned-border)"></div>
+      Planned
+    </div>
     <div class="legend-item">
       <svg width="10" height="10" style="flex-shrink:0"><circle cx="5" cy="5" r="4" fill="#A32D2D" stroke="#791F1F" stroke-width="1.5"/></svg>
-      Drop-dead date
+      Deadline
     </div>
   </div>
 
   <div class="footer">
-    Last updated: <span id="last-updated"></span> &nbsp;·&nbsp; communities-timeline.html &nbsp;·&nbsp; Edit <code>DATA</code> block in source to update tasks
+    Last updated: <span id="last-updated"></span> &nbsp;·&nbsp; Jira LMSV3 + GitHub thrivecart/LearnV3 &nbsp;·&nbsp; <code>index-original.html</code> preserved for comparison
   </div>
 
 <script>
-  /* ================================================================
-     DATA — edit this block to update the chart
-     ================================================================ */
-
   const MIN_DATE = new Date(2026, 0, 5);
   const MAX_DATE = new Date(2026, 5, 14);
 
-  /* ─── TEST PHASES ─────────────────────────────────────────────── */
   const PHASES = [
-    { label:"Alpha · invite only · 30–50 users",            bandClass:"pb-alpha",  flagClass:"flag-alpha",  start:new Date(2026,2,30), end:new Date(2026,3,13) },
-    { label:"Alpha 2 · open sign-up · 10–50 creators",      bandClass:"pb-alpha2", flagClass:"flag-alpha2", start:new Date(2026,3,14), end:new Date(2026,3,27) },
-    { label:"Beta · CS list · 200–400 creators",            bandClass:"pb-beta",   flagClass:"flag-beta",   start:new Date(2026,3,27), end:new Date(2026,4,18) },
-    { label:"GA · full release",                            bandClass:"pb-ga",     flagClass:"flag-ga",     start:new Date(2026,4,25), end:new Date(2026,5,7)  },
+    { label:"Alpha · 30–50 users",       bandClass:"pb-alpha",  flagClass:"flag-alpha",  start:new Date(2026,2,30), end:new Date(2026,3,13) },
+    { label:"Alpha 2 · 10–50 creators",  bandClass:"pb-alpha2", flagClass:"flag-alpha2", start:new Date(2026,3,14), end:new Date(2026,3,27) },
+    { label:"Beta · 200–400 creators",   bandClass:"pb-beta",   flagClass:"flag-beta",   start:new Date(2026,3,27), end:new Date(2026,4,18) },
+    { label:"GA · full release",          bandClass:"pb-ga",     flagClass:"flag-ga",     start:new Date(2026,4,25), end:new Date(2026,5,7)  },
   ];
 
-  /* ─── GROUPS & ROWS ───────────────────────────────────────────── */
   const GROUPS = [
     {
-      label: "Infra — auth (this week) · payments blocked · Bunny.net (next week)",
+      label: "E0 — Foundation · 592",
       rows: [
         {
-          name: "Auth — session/JWT + permissions",
-          sub:  "Started 10 Mar · due 28 Mar",
+          name: "Schema + backfill",
+          sub:  "602/603 · Done",
           bars: [
-            { cls:"b-done",   s:new Date(2026,2,10), e:new Date(2026,2,20), dl:new Date(2026,2,20), ddc:"dd-green" },
-            { cls:"b-urgent", s:new Date(2026,2,20), e:new Date(2026,2,28), dl:new Date(2026,2,28), ddc:"dd-red"   },
+            { cls:"b-planned", s:new Date(2026,0,6), e:new Date(2026,1,14), label:"Planned" },
+            { cls:"b-done", s:new Date(2026,2,11), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
+          ],
+        },
+        {
+          name: "Analytics service",
+          sub:  "604 · TODO — was shown as Done",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,1,2), e:new Date(2026,2,7), label:"Planned" },
+            { cls:"b-urgent", s:new Date(2026,2,11), e:new Date(2026,2,26), dl:new Date(2026,2,30), ddc:"dd-red" },
+          ],
+        },
+        {
+          name: "Brand utilities",
+          sub:  "605 · Done",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,1,2), e:new Date(2026,2,7), label:"Planned" },
+            { cls:"b-done", s:new Date(2026,2,12), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "E1 — Creator Wizard · 593",
+      rows: [
+        {
+          name: "Wizard steps 1–4",
+          sub:  "606–609 · All Done",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,1,2), e:new Date(2026,2,28), label:"Planned" },
+            { cls:"b-done", s:new Date(2026,2,12), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
+          ],
+        },
+        {
+          name: "Wizard cleanup + brand theming",
+          sub:  "610–612 · All Done",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,2,2), e:new Date(2026,2,28), label:"Planned" },
+            { cls:"b-done", s:new Date(2026,2,13), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "E2 — Setup Checklist · 594",
+      rows: [
+        {
+          name: "Checklist + go-live blocker check",
+          sub:  "613–615 · All Done",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,2,2), e:new Date(2026,2,28), label:"Planned" },
+            { cls:"b-done", s:new Date(2026,2,13), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "E3 — Access & Privacy · 595",
+      rows: [
+        {
+          name: "Public join + access model settings",
+          sub:  "616/617 · Done",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,1,16), e:new Date(2026,2,14), label:"Planned" },
+            { cls:"b-done", s:new Date(2026,2,11), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
+          ],
+        },
+        {
+          name: "Free-private access request",
+          sub:  "618 · In Review",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,2,17), e:new Date(2026,3,4), label:"Planned" },
+            { cls:"b-atrisk", s:new Date(2026,2,13), e:new Date(2026,2,26), dl:new Date(2026,2,30), ddc:"dd-amber" },
+          ],
+        },
+        {
+          name: "Invite codes + access requests",
+          sub:  "619–621 · Mixed TODO/QA",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,2,17), e:new Date(2026,3,4), label:"Planned" },
+            { cls:"b-blocked", s:new Date(2026,2,11), e:new Date(2026,2,15), dl:new Date(2026,2,30), ddc:"dd-red" },
+            { cls:"b-alpha",   s:new Date(2026,2,15), e:new Date(2026,2,26), dl:new Date(2026,2,30), ddc:"dd-amber" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "E4–E6 — Gamification, Preview & Go-Live · 596/597/598",
+      rows: [
+        {
+          name: "Gamification config + preview",
+          sub:  "622–624 · All Done",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,2,17), e:new Date(2026,2,29), label:"Planned" },
+            { cls:"b-done", s:new Date(2026,2,14), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
+          ],
+        },
+        {
+          name: "Go live + take offline",
+          sub:  "625/626 · Done",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,2,23), e:new Date(2026,2,29), label:"Planned" },
+            { cls:"b-done", s:new Date(2026,2,15), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "E7 — Universal Student Account · 599",
+      rows: [
+        {
+          name: "Universal account + cross-community",
+          sub:  "627/628 · QA / In Review",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,3,2), e:new Date(2026,3,13), label:"Planned" },
+            { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,2,26), dl:new Date(2026,2,30), ddc:"dd-amber" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "E8 — Student Onboarding · 600 · 8 stories",
+      rows: [
+        {
+          name: "Onboarding flow + cards",
+          sub:  "629–636 · All in QA",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,3,2), e:new Date(2026,3,13), label:"Planned" },
+            { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,2,26), dl:new Date(2026,2,30), ddc:"dd-amber" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "E9 — Platform Badges · 601 · 4 stories",
+      rows: [
+        {
+          name: "Badges + level-up system",
+          sub:  "637–640 · All in QA",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,3,7), e:new Date(2026,3,21), label:"Planned" },
+            { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,2,26), dl:new Date(2026,3,14), ddc:"dd-blue" },
+          ],
+        },
+      ],
+    },
+
+    /* ── Infra ─────────────────────────────────────────────────── */
+    {
+      label: "Infra — CDN & Payments",
+      rows: [
+        {
+          name: "Bunny.net asset segmentation",
+          sub:  "713 · In Progress since Mar 13 · feeds into Media Library (992/994)",
+          bars: [
+            { cls:"b-planned", s:new Date(2026,2,24), e:new Date(2026,3,4), label:"Planned" },
+            { cls:"b-alpha2", s:new Date(2026,2,13), e:new Date(2026,3,4), dl:new Date(2026,3,4), ddc:"dd-amber" },
           ],
         },
         {
           name: "Payments integration",
-          sub:  "Started 5 Mar · in progress then blocked by payments team ~16 Mar",
+          sub:  "No Jira ticket · blocked by payments team · unblocks billing at GA",
           bars: [
-            { cls:"b-atrisk",  s:new Date(2026,2,5),  e:new Date(2026,2,16), dl:new Date(2026,3,4), ddc:"dd-amber" },
-            { cls:"b-blocked", s:new Date(2026,2,16), e:new Date(2026,3,4),  dl:new Date(2026,3,4), ddc:"dd-amber" },
-          ],
-        },
-        {
-          name: "Bunny.net solution",
-          sub:  "Started 24 Mar · ~6 days · due 4 Apr",
-          bars: [
-            { cls:"b-atrisk", s:new Date(2026,2,24), e:new Date(2026,3,4), dl:new Date(2026,3,4), ddc:"dd-amber" },
+            { cls:"b-planned", s:new Date(2026,2,5), e:new Date(2026,3,4), label:"Planned" },
+            { cls:"b-blocked", s:new Date(2026,2,5), e:new Date(2026,2,16), dl:new Date(2026,4,11), ddc:"dd-gray" },
           ],
         },
       ],
     },
+
+    /* ── Additional Epics ──────────────────────────────────────── */
     {
-      label: "Epic 0 — Foundation (Jan–Mar) · complete",
+      label: "Auth · 919 · 12/12 Done",
       rows: [
         {
-          name: "Schema migrations + backfill",
-          sub:  "LMSV3-602/603 · done",
-          bars: [{ cls:"b-done", s:new Date(2026,0,6), e:new Date(2026,1,14), dl:new Date(2026,1,14), ddc:"dd-green" }],
-        },
-        {
-          name: "Analytics service + brand utils",
-          sub:  "LMSV3-604/605 · done",
-          bars: [{ cls:"b-done", s:new Date(2026,1,2), e:new Date(2026,2,7), dl:new Date(2026,2,7), ddc:"dd-green" }],
+          name: "OAuth, magic link, OTP, branding",
+          sub:  "920–931 · All Done",
+          bars: [
+            { cls:"b-done", s:new Date(2026,2,20), e:new Date(2026,2,26), dl:new Date(2026,2,26), ddc:"dd-green" },
+          ],
         },
       ],
     },
     {
-      label: "Epics 1–3 — Wizard, checklist & access models",
+      label: "Course Management · 457 · ~85% done",
       rows: [
         {
-          name: "Creation wizard (4 screens)",
-          sub:  "LMSV3-606–609 · steps 1–3 done, step 4 in flight",
+          name: "Editor, preview, shortcuts, bulk upload",
+          sub:  "~68/80 Done · mobile + drip remaining",
           bars: [
-            { cls:"b-done",  s:new Date(2026,1,2), e:new Date(2026,2,7),  dl:new Date(2026,2,7),  ddc:"dd-green" },
-            { cls:"b-alpha", s:new Date(2026,2,9), e:new Date(2026,2,28), dl:new Date(2026,2,28), ddc:"dd-amber" },
+            { cls:"b-done",   s:new Date(2026,2,3),  e:new Date(2026,2,24), dl:new Date(2026,2,24), ddc:"dd-green" },
+            { cls:"b-atrisk", s:new Date(2026,2,24), e:new Date(2026,3,3),  dl:new Date(2026,3,3),  ddc:"dd-amber" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Student Course Display · 984 · Done",
+      rows: [
+        {
+          name: "Skeleton, lock icons, CTA, branding",
+          sub:  "985–990 · 6/6 Done",
+          bars: [
+            { cls:"b-done", s:new Date(2026,2,24), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Blueprints · 934 · Done",
+      rows: [
+        {
+          name: "Lesson content templates",
+          sub:  "935–940 · All Done",
+          bars: [
+            { cls:"b-done", s:new Date(2026,2,24), e:new Date(2026,2,26), dl:new Date(2026,2,26), ddc:"dd-green" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Media Library / Piktochart · 992 · 9 stories",
+      rows: [
+        {
+          name: "Media SDK + integrations",
+          sub:  "993–1000 · 4/9 active, 5 TODO",
+          bars: [
+            { cls:"b-alpha2", s:new Date(2026,2,24), e:new Date(2026,3,7), dl:new Date(2026,3,14), ddc:"dd-blue" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Quiz · 869 + 880 · 18 stories",
+      rows: [
+        {
+          name: "Quiz Creator",
+          sub:  "869 · 1/12 Done, 10 blocked",
+          bars: [
+            { cls:"b-blocked", s:new Date(2026,2,22), e:new Date(2026,3,10), dl:new Date(2026,3,27), ddc:"dd-red" },
           ],
         },
         {
-          name: "Setup checklist (5 stories)",
-          sub:  "LMSV3-610–614 · started 2 Mar",
-          bars: [{ cls:"b-alpha", s:new Date(2026,2,2), e:new Date(2026,2,28), dl:new Date(2026,2,28), ddc:"dd-amber" }],
-        },
-        {
-          name: "Access models — public & free-private",
-          sub:  "LMSV3-615/616 · done",
-          bars: [{ cls:"b-done", s:new Date(2026,1,16), e:new Date(2026,2,14), dl:new Date(2026,2,14), ddc:"dd-green" }],
-        },
-        {
-          name: "Access models — invite-only & paid",
-          sub:  "LMSV3-617/618 · needs auth → started 17 Mar",
-          bars: [{ cls:"b-alpha", s:new Date(2026,2,17), e:new Date(2026,3,4), dl:new Date(2026,3,4), ddc:"dd-amber" }],
+          name: "Quiz Student",
+          sub:  "880 · 0/6, all blocked",
+          bars: [
+            { cls:"b-blocked", s:new Date(2026,3,10), e:new Date(2026,3,24), dl:new Date(2026,3,27), ddc:"dd-red" },
+          ],
         },
       ],
     },
     {
-      label: "Epics 4–6 — Gamification config, preview & go-live",
+      label: "ThriveCart Integration · 1019 · 16 stories",
       rows: [
         {
-          name: "Gamification panel + preview (E2E)",
-          sub:  "LMSV3-619/620 · needs auth → started 17 Mar",
-          bars: [{ cls:"b-alpha", s:new Date(2026,2,17), e:new Date(2026,2,29), dl:new Date(2026,2,29), ddc:"dd-amber" }],
-        },
-        {
-          name: "Go-live + take offline",
-          sub:  "LMSV3-621/622 · needs access models → 23 Mar",
-          bars: [{ cls:"b-alpha", s:new Date(2026,2,23), e:new Date(2026,2,29), dl:new Date(2026,2,29), ddc:"dd-amber" }],
-        },
-      ],
-    },
-    {
-      label: "Epics 7–8 — Student accounts & onboarding",
-      rows: [
-        {
-          name: "Copy user data / account migration",
-          sub:  "Testing in progress now · unblocks profile + onboarding w/c 2 Apr",
-          bars: [{ cls:"b-alpha", s:new Date(2026,2,19), e:new Date(2026,3,2), dl:new Date(2026,3,2), ddc:"dd-amber" }],
-        },
-        {
-          name: "Universal student profile",
-          sub:  "LMSV3-623 · starts w/c 2 Apr (pending migration test)",
-          bars: [{ cls:"b-alpha", s:new Date(2026,3,2), e:new Date(2026,3,13), dl:new Date(2026,3,13), ddc:"dd-blue" }],
-        },
-        {
-          name: "Onboarding overlay + dismissal (6 stories)",
-          sub:  "LMSV3-624–629 · starts w/c 2 Apr",
-          bars: [{ cls:"b-alpha", s:new Date(2026,3,2), e:new Date(2026,3,13), dl:new Date(2026,3,13), ddc:"dd-blue" }],
-        },
-        {
-          name: "Student migration (Alpha creators)",
-          sub:  "Started 19 Mar · staggered rollout through early May",
-          bars: [{ cls:"b-alpha", s:new Date(2026,2,19), e:new Date(2026,4,4), dl:new Date(2026,4,4), ddc:"dd-blue" }],
-        },
-      ],
-    },
-    {
-      label: "Alpha 2 — 14 Apr · enhanced features + Epic 9",
-      rows: [
-        {
-          name: "Global leaderboard",
-          sub:  "LMSV3-630 · completed ~19 Mar",
-          bars: [{ cls:"b-done", s:new Date(2026,2,2), e:new Date(2026,2,19), dl:new Date(2026,2,19), ddc:"dd-green" }],
-        },
-        {
-          name: "Page / feed search",
-          sub:  "Completed ~19 Mar",
-          bars: [{ cls:"b-done", s:new Date(2026,2,2), e:new Date(2026,2,19), dl:new Date(2026,2,19), ddc:"dd-green" }],
-        },
-        {
-          name: "Global / community-wide search",
-          sub:  "In progress now · due 14 Apr",
-          bars: [{ cls:"b-alpha2", s:new Date(2026,2,19), e:new Date(2026,3,14), dl:new Date(2026,3,14), ddc:"dd-blue" }],
-        },
-        {
-          name: "Cross-community achievements",
-          sub:  "LMSV3-631 · ~2 weeks from 7 Apr",
-          bars: [{ cls:"b-alpha2", s:new Date(2026,3,7), e:new Date(2026,3,21), dl:new Date(2026,3,14), ddc:"dd-blue" }],
-        },
-        {
-          name: "Real-time notifications",
-          sub:  "~2 weeks from 7 Apr",
-          bars: [{ cls:"b-alpha2", s:new Date(2026,3,7), e:new Date(2026,3,21), dl:new Date(2026,3,14), ddc:"dd-blue" }],
-        },
-        {
-          name: "Community types",
-          sub:  "~2 weeks from 7 Apr",
-          bars: [{ cls:"b-alpha2", s:new Date(2026,3,7), e:new Date(2026,3,21), dl:new Date(2026,3,14), ddc:"dd-blue" }],
-        },
-        {
-          name: "Basic analytics + perf unlocking",
-          sub:  "~2 weeks from 7 Apr",
-          bars: [{ cls:"b-alpha2", s:new Date(2026,3,7), e:new Date(2026,3,21), dl:new Date(2026,3,14), ddc:"dd-blue" }],
-        },
-        {
-          name: "Magic link auth",
-          sub:  "~3 days · spike from 7 Apr",
-          bars: [{ cls:"b-alpha2", s:new Date(2026,3,7), e:new Date(2026,3,11), dl:new Date(2026,3,14), ddc:"dd-blue" }],
-        },
-      ],
-    },
-    {
-      label: "Beta — w/c 27 Apr · CS Beta list",
-      rows: [
-        {
-          name: "Non-realtime notifications",
-          sub:  "Beta window",
-          bars: [{ cls:"b-beta", s:new Date(2026,3,27), e:new Date(2026,4,18), dl:new Date(2026,4,18), ddc:"dd-amber" }],
-        },
-        {
-          name: "Completion bonuses + certificate triggers",
-          sub:  "Moved from Alpha 2 — not available until Beta",
-          bars: [{ cls:"b-beta", s:new Date(2026,3,27), e:new Date(2026,4,18), dl:new Date(2026,4,18), ddc:"dd-gray" }],
-        },
-      ],
-    },
-    {
-      label: "GA — end May · commerce & integration",
-      rows: [
-        {
-          name: "Billing (ThrivePay), upsells, ThriveCampaign",
-          sub:  "Needs payments unblocked → starts mid-May",
-          bars: [{ cls:"b-ga", s:new Date(2026,4,11), e:new Date(2026,4,31), dl:new Date(2026,4,31), ddc:"dd-purple" }],
-        },
-        {
-          name: "Events, enhanced analytics, study groups",
-          sub:  "Post-Beta feedback loop → mid-May",
-          bars: [{ cls:"b-ga", s:new Date(2026,4,18), e:new Date(2026,4,31), dl:new Date(2026,4,31), ddc:"dd-purple" }],
+          name: "Migration pipeline — 7 batches",
+          sub:  "1020–1035 · 7 review, 9 TODO",
+          bars: [
+            { cls:"b-alpha2", s:new Date(2026,2,26), e:new Date(2026,3,16), dl:new Date(2026,4,25), ddc:"dd-purple" },
+          ],
         },
       ],
     },
   ];
 
   /* ================================================================
-     ENGINE — no need to edit below this line
+     ENGINE
      ================================================================ */
   const SPAN = MAX_DATE - MIN_DATE;
 
@@ -389,10 +490,13 @@
   function buildCanvas(today) {
     const canvas = document.getElementById("canvas");
     canvas.innerHTML = `
-      <div class="today-overlay" id="today-overlay"></div>
-      <div class="today-line" id="today-line"><div class="today-pin"></div></div>
+      <div class="chart-overlay" id="chart-overlay">
+        <div class="today-overlay" id="today-overlay"></div>
+        <div class="today-line" id="today-line"><div class="today-pin"></div></div>
+      </div>
     `;
 
+    const overlay = document.getElementById("chart-overlay");
     PHASES.forEach(phase => {
       const wrap = document.createElement("div");
       wrap.className = "flag-wrap " + phase.flagClass;
@@ -401,7 +505,7 @@
       const head = document.createElement("div"); head.className = "flag-head";
       head.textContent = fmt(phase.start);
       wrap.appendChild(pole); wrap.appendChild(head);
-      canvas.appendChild(wrap);
+      overlay.appendChild(wrap);
     });
 
     GROUPS.forEach(group => {
@@ -417,16 +521,30 @@
 
         const track = document.createElement("div"); track.className = "track";
         row.bars.forEach(b => {
-          const left = pct(b.s), width = Math.max(0.5, pct(b.e) - pct(b.s));
+          /* Skip planned bars if toggle is off */
+          if (b.cls === "b-planned" && !showPlanned) return;
+
+          const left = pct(b.s), width = Math.max(1.5, pct(b.e) - pct(b.s));
           const bar = document.createElement("div");
           bar.className = "bar " + b.cls;
           bar.style.left = left + "%"; bar.style.width = width + "%";
-          bar.innerHTML = `<span class="bar-label">${countdown(today, b.dl)} · ${fmt(b.dl)}</span>`;
+
+          if (b.dl) {
+            if (b.cls === "b-done") {
+              bar.innerHTML = `<span class="bar-label">Done · ${fmt(b.dl)}</span>`;
+            } else {
+              bar.innerHTML = `<span class="bar-label">${countdown(today, b.dl)} · ${fmt(b.dl)}</span>`;
+            }
+          } else {
+            bar.innerHTML = `<span class="bar-label">${b.label || ''}</span>`;
+          }
           track.appendChild(bar);
 
-          const dot = document.createElement("div");
-          dot.className = "dd " + b.ddc; dot.style.left = pct(b.dl) + "%";
-          track.appendChild(dot);
+          if (b.dl && b.ddc && b.cls !== "b-done") {
+            const dot = document.createElement("div");
+            dot.className = "dd " + b.ddc; dot.style.left = pct(b.dl) + "%";
+            track.appendChild(dot);
+          }
         });
         rowEl.appendChild(track);
         canvas.appendChild(rowEl);
@@ -457,12 +575,20 @@
     buildCanvas(today);
   }
 
+  let showPlanned = true;
+
   document.getElementById("last-updated").textContent = new Date().toLocaleDateString("en-GB", { day:"numeric", month:"long", year:"numeric" });
   buildAxis();
   const pickerEl = document.getElementById("date-picker");
   pickerEl.value = "2026-03-26";
   updateDate("2026-03-26");
   pickerEl.addEventListener("change", function() { updateDate(this.value); });
+
+  document.getElementById("planned-toggle").addEventListener("click", function() {
+    showPlanned = !showPlanned;
+    document.getElementById("planned-switch").classList.toggle("on", showPlanned);
+    updateDate(pickerEl.value);
+  });
 </script>
 </body>
 </html>
