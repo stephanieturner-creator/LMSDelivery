@@ -288,23 +288,29 @@
         },
         {
           name: "Free-private access request",
-          sub:  "618 · In Review",
+          sub:  "618 · Stories done, epic QA",
           milestone: "alpha",
           tickets: [{k:"LMSV3-618",s:"Student requests free-private access"}],
           bars: [
-
-            { cls:"b-atrisk", s:new Date(2026,2,13), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
+            { cls:"b-alpha", s:new Date(2026,2,13), e:new Date(2026,2,25), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
         },
         {
-          name: "Invite codes + access requests",
-          sub:  "619–621 · Mixed TODO/QA",
+          name: "Access requests + invite join",
+          sub:  "619/620 · Stories done, epic QA",
           milestone: "alpha",
-          tickets: [{k:"LMSV3-619",s:"Creator manages access requests"},{k:"LMSV3-620",s:"Student joins with invite code"},{k:"LMSV3-621",s:"Creator manages invite codes"}],
+          tickets: [{k:"LMSV3-619",s:"Creator manages access requests"},{k:"LMSV3-620",s:"Student joins with invite code"}],
           bars: [
-
-            { cls:"b-blocked", s:new Date(2026,2,11), e:new Date(2026,2,15), dl:new Date(2026,2,30), ddc:"dd-red" },
-            { cls:"b-alpha",   s:new Date(2026,2,15), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
+            { cls:"b-alpha", s:new Date(2026,2,11), e:new Date(2026,2,25), dl:new Date(2026,2,30), ddc:"dd-amber" },
+          ],
+        },
+        {
+          name: "Creator manages invite codes",
+          sub:  "621 · Not started — 0 PRs",
+          milestone: "alpha",
+          tickets: [{k:"LMSV3-621",s:"Creator generates and manages invite codes"}],
+          bars: [
+            { cls:"b-blocked", s:new Date(2026,2,26), e:new Date(2026,3,13), dl:new Date(2026,3,13), ddc:"dd-red" },
           ],
         },
       ],
@@ -339,11 +345,10 @@
       rows: [
         {
           name: "Universal account + cross-community",
-          sub:  "627/628 · QA / In Review",
+          sub:  "627 stories done · 628 needs verification · epic QA",
           milestone: "alpha",
           tickets: [{k:"LMSV3-627",s:"Verify universal account across communities"},{k:"LMSV3-628",s:"Cross-community progress dashboard"}],
           bars: [
-
             { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
         },
@@ -354,7 +359,7 @@
       rows: [
         {
           name: "Onboarding flow + cards",
-          sub:  "629–636 · All in QA",
+          sub:  "629–636 · All stories done, epic QA",
           milestone: "alpha",
           tickets: [{k:"LMSV3-629",s:"Onboarding overlay on first visit"},{k:"LMSV3-630",s:"Profile card (+50 pts)"},{k:"LMSV3-631",s:"Goals card (+25 pts)"},{k:"LMSV3-632",s:"Tour card (+25 pts)"},{k:"LMSV3-633",s:"First Action card (+100 pts)"},{k:"LMSV3-634",s:"Completion summary with badge"},{k:"LMSV3-635",s:"Dismiss and resume onboarding"},{k:"LMSV3-636",s:"Second community fresh onboarding"}],
           bars: [
@@ -369,7 +374,7 @@
       rows: [
         {
           name: "Badges + level-up system",
-          sub:  "637–640 · All in QA",
+          sub:  "637–640 · All stories done, epic QA",
           milestone: "alpha2",
           tickets: [{k:"LMSV3-637",s:"Define platform badge criteria"},{k:"LMSV3-638",s:"Badge auto-award triggers"},{k:"LMSV3-639",s:"Badge display on profile"},{k:"LMSV3-640",s:"Level-up notification"}],
           bars: [
@@ -409,15 +414,15 @@
 
     /* ── Additional Epics ──────────────────────────────────────── */
     {
-      label: "Auth · 919 · 12/12 Done",
+      label: "Auth · 919 · 12/12 stories done, epic QA",
       rows: [
         {
           name: "OAuth, magic link, OTP, branding",
-          sub:  "920–931 · All Done",
-          milestone: "done",
+          sub:  "920–931 · All stories done, epic QA",
+          milestone: "alpha",
           tickets: [{k:"LMSV3-919",s:"Auth (parent epic)"},{k:"LMSV3-920",s:"AuthLayout component"},{k:"LMSV3-926",s:"Auth brand service"},{k:"LMSV3-929",s:"Magic link branding"},{k:"LMSV3-930",s:"OTP schema + API"},{k:"LMSV3-931",s:"OTP input component"}],
           bars: [
-            { cls:"b-done", s:new Date(2026,2,20), e:new Date(2026,2,26), dl:new Date(2026,2,26), ddc:"dd-green" },
+            { cls:"b-alpha", s:new Date(2026,2,20), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
         },
       ],
