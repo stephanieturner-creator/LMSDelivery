@@ -65,6 +65,7 @@
     .b-urgent  { background:#F09595; } .b-urgent  .bar-label { color:#501313; }
     .b-atrisk  { background:#FAC775; } .b-atrisk  .bar-label { color:#412402; }
     .b-blocked { background:#D3D1C7; } .b-blocked .bar-label { color:#2C2C2A; }
+    .b-qa      { background:#5CB8B2; } .b-qa      .bar-label { color:#0A3D3A; }
     .b-alpha   { background:#9FE1CB; } .b-alpha   .bar-label { color:#04342C; }
     .b-alpha2  { background:#85B7EB; } .b-alpha2  .bar-label { color:#042C53; }
     .b-beta    { background:#B5D4F4; } .b-beta    .bar-label { color:#042C53; }
@@ -164,7 +165,7 @@
     <div class="legend-item"><div class="legend-swatch" style="background:#F09595"></div>Urgent</div>
     <div class="legend-item"><div class="legend-swatch" style="background:#FAC775"></div>At risk</div>
     <div class="legend-item"><div class="legend-swatch" style="background:#D3D1C7"></div>Blocked</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#9FE1CB"></div>QA</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#5CB8B2"></div>QA</div>
     <div class="legend-item"><div class="legend-swatch" style="background:#85B7EB"></div>Active</div>
     <div class="legend-item">
       <svg width="10" height="10" style="flex-shrink:0"><circle cx="5" cy="5" r="4" fill="#A32D2D" stroke="#791F1F" stroke-width="1.5"/></svg>
@@ -292,7 +293,7 @@
           milestone: "alpha",
           tickets: [{k:"LMSV3-618",s:"Student requests free-private access"}],
           bars: [
-            { cls:"b-alpha", s:new Date(2026,2,13), e:new Date(2026,2,25), dl:new Date(2026,2,30), ddc:"dd-amber" },
+            { cls:"b-qa", s:new Date(2026,2,13), e:new Date(2026,2,25), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
         },
         {
@@ -301,7 +302,7 @@
           milestone: "alpha",
           tickets: [{k:"LMSV3-619",s:"Creator manages access requests"},{k:"LMSV3-620",s:"Student joins with invite code"}],
           bars: [
-            { cls:"b-alpha", s:new Date(2026,2,11), e:new Date(2026,2,25), dl:new Date(2026,2,30), ddc:"dd-amber" },
+            { cls:"b-qa", s:new Date(2026,2,11), e:new Date(2026,2,25), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
         },
         {
@@ -349,7 +350,7 @@
           milestone: "alpha",
           tickets: [{k:"LMSV3-627",s:"Verify universal account across communities"},{k:"LMSV3-628",s:"Cross-community progress dashboard"}],
           bars: [
-            { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
+            { cls:"b-qa", s:new Date(2026,2,15), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
         },
       ],
@@ -363,8 +364,7 @@
           milestone: "alpha",
           tickets: [{k:"LMSV3-629",s:"Onboarding overlay on first visit"},{k:"LMSV3-630",s:"Profile card (+50 pts)"},{k:"LMSV3-631",s:"Goals card (+25 pts)"},{k:"LMSV3-632",s:"Tour card (+25 pts)"},{k:"LMSV3-633",s:"First Action card (+100 pts)"},{k:"LMSV3-634",s:"Completion summary with badge"},{k:"LMSV3-635",s:"Dismiss and resume onboarding"},{k:"LMSV3-636",s:"Second community fresh onboarding"}],
           bars: [
-
-            { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
+            { cls:"b-qa", s:new Date(2026,2,15), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
         },
       ],
@@ -378,8 +378,7 @@
           milestone: "alpha2",
           tickets: [{k:"LMSV3-637",s:"Define platform badge criteria"},{k:"LMSV3-638",s:"Badge auto-award triggers"},{k:"LMSV3-639",s:"Badge display on profile"},{k:"LMSV3-640",s:"Level-up notification"}],
           bars: [
-
-            { cls:"b-alpha", s:new Date(2026,2,15), e:new Date(2026,3,14), dl:new Date(2026,3,14), ddc:"dd-blue" },
+            { cls:"b-qa", s:new Date(2026,2,15), e:new Date(2026,3,14), dl:new Date(2026,3,14), ddc:"dd-blue" },
           ],
         },
       ],
@@ -422,7 +421,7 @@
           milestone: "alpha",
           tickets: [{k:"LMSV3-919",s:"Auth (parent epic)"},{k:"LMSV3-920",s:"AuthLayout component"},{k:"LMSV3-926",s:"Auth brand service"},{k:"LMSV3-929",s:"Magic link branding"},{k:"LMSV3-930",s:"OTP schema + API"},{k:"LMSV3-931",s:"OTP input component"}],
           bars: [
-            { cls:"b-alpha", s:new Date(2026,2,20), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
+            { cls:"b-qa", s:new Date(2026,2,20), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
           ],
         },
       ],
