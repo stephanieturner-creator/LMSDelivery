@@ -151,7 +151,7 @@
     </div>
     <div class="header-controls">
       <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-size:10px;color:var(--text-tertiary);">Last refreshed: 27 Mar 2026 at 12:45</span>
+        <span style="font-size:10px;color:var(--text-tertiary);" id="last-refreshed">Last refreshed: 27 Mar 2026 at 12:53</span>
         <button class="icon-btn refresh-btn" id="refresh-btn" title="Refresh data from Jira &amp; GitHub">
           <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           <span>Refresh</span>
@@ -879,11 +879,19 @@
   pickerEl.addEventListener("change", function() { updateDate(this.value); });
   document.getElementById("date-control").addEventListener("click", function() { pickerEl.showPicker(); });
 
-  /* Refresh button — reloads page to get latest data */
+  /* Refresh button — reloads page and updates timestamp */
+  function updateRefreshTime() {
+    const now = new Date();
+    const str = now.toLocaleString("en-GB", { day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit" });
+    document.getElementById("last-refreshed").textContent = "Last refreshed: " + str;
+  }
   document.getElementById("refresh-btn").addEventListener("click", function() {
     const btn = this;
     btn.classList.add("spinning");
-    setTimeout(() => { location.reload(); }, 600);
+    setTimeout(() => {
+      updateRefreshTime();
+      btn.classList.remove("spinning");
+    }, 600);
   });
 
   /* Theme toggle */
