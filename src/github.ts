@@ -75,20 +75,36 @@ async function ghApiFetch(endpoint: string): Promise<any> {
   return allResults;
 }
 
+const CACHE_PATH = import.meta.dir + "/../.pr-cache.json";
+
 /**
  * Fetch ALL merged PRs from the repo.
+ * Saves to cache on success, reads from cache on failure.
  */
 export async function fetchAllMergedPRs(): Promise<MergedPR[]> {
-  const prs = await ghApiFetch(`repos/${GITHUB_REPO}/pulls?state=closed&per_page=100`);
+  try {
+    const prs = await ghApiFetch(`repos/${GITHUB_REPO}/pulls?state=closed&per_page=100`);
+    const merged = prs
+      .filter((pr: any) => pr.merged_at)
+      .map((pr: any) => ({
+        number: pr.number,
+        title: pr.title ?? "",
+        state: pr.state,
+        mergedAt: pr.merged_at,
+      }));
 
-  return prs
-    .filter((pr: any) => pr.merged_at)
-    .map((pr: any) => ({
-      number: pr.number,
-      title: pr.title ?? "",
-      state: pr.state,
-      mergedAt: pr.merged_at,
-    }));
+    // Cache for CI use
+    await Bun.write(CACHE_PATH, JSON.stringify(merged));
+    return merged;
+  } catch (err) {
+    // Try reading from cache
+    const file = Bun.file(CACHE_PATH);
+    if (await file.exists()) {
+      console.warn("  Using cached PR data (GitHub unavailable)");
+      return JSON.parse(await file.text()) as MergedPR[];
+    }
+    throw err;
+  }
 }
 
 /**
