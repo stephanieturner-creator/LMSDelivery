@@ -154,8 +154,8 @@
     </div>
     <div class="header-controls">
       <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-size:10px;color:var(--text-tertiary);" id="last-refreshed">Last refreshed: 27 Mar 2026 at 13:35</span>
-        <button class="icon-btn refresh-btn" id="refresh-btn" title="Refresh data from Jira &amp; GitHub">
+        <span style="font-size:10px;color:var(--text-tertiary);" id="last-refreshed"></span>
+        <button class="icon-btn refresh-btn" id="refresh-btn" title="Refresh">
           <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           <span>Refresh</span>
         </button>
@@ -882,10 +882,18 @@
   pickerEl.addEventListener("change", function() { updateDate(this.value); });
   document.getElementById("date-control").addEventListener("click", function() { pickerEl.showPicker(); });
 
-  /* Refresh button — cache-busting reload */
+  /* Last refreshed — set on load, update on click */
+  function setRefreshTime() {
+    const now = new Date();
+    document.getElementById("last-refreshed").textContent = "Last refreshed: " + now.toLocaleString(undefined, { day:"numeric", month:"short", year:"numeric", hour:"numeric", minute:"2-digit", hour12:true });
+  }
+  setRefreshTime();
+
+  /* Refresh button — cache bust reload */
   document.getElementById("refresh-btn").addEventListener("click", function() {
     const btn = this;
     btn.classList.add("spinning");
+    setRefreshTime();
     setTimeout(() => { window.location.href = window.location.pathname + "?t=" + Date.now(); }, 600);
   });
 
