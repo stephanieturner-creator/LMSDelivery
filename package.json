@@ -1,0 +1,13 @@
+{
+  "name": "lms-delivery",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "refresh": "bun run src/refresh.ts",
+    "refresh:push": "bun run src/refresh.ts --push",
+    "refresh:dry": "bun run src/refresh.ts --dry-run"
+  },
+  "devDependencies": {
+    "bun-types": "^1.3.11"
+  }
+}
