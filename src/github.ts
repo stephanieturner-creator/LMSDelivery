@@ -58,8 +58,7 @@ async function ghApiFetch(endpoint: string): Promise<any> {
   const allResults: any[] = [];
   let page = 1;
   while (true) {
-    const sep = endpoint.includes("?") ? "&" : "?";
-    const url = `https://api.github.com/${endpoint}${sep}per_page=100&page=${page}`;
+    const url = `https://api.github.com/${endpoint}${endpoint.includes("?") ? "&" : "?"}page=${page}`;
     const res = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,

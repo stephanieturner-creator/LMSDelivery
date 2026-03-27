@@ -109,8 +109,8 @@ async function main(): Promise<void> {
     allPRs = await fetchAllMergedPRs();
     console.log(`  Received ${allPRs.length} merged PRs.`);
   } catch (err) {
-    console.error("Failed to fetch GitHub PRs:", err);
-    process.exit(1);
+    console.warn("  Warning: Failed to fetch GitHub PRs (will use Jira data only):", (err as Error).message);
+    allPRs = [];
   }
 
   // --- Cross-reference ---
