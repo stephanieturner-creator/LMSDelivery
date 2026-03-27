@@ -15,19 +15,26 @@
       --radius-sm: 4px; --radius-md: 8px; --lh: 36px;
     }
     @media (prefers-color-scheme: dark) {
-      :root {
+      :root:not(.light) {
         --bg: #1a1a18; --bg-secondary: #242422; --bg-row-alt: rgba(255,255,255,0.025);
         --border: rgba(255,255,255,0.10); --border-mid: rgba(255,255,255,0.22);
         --text-primary: #f0ede8; --text-secondary: #b4b2a9; --text-tertiary: #888780;
       }
+    }
+    :root.dark {
+      --bg: #1a1a18; --bg-secondary: #242422; --bg-row-alt: rgba(255,255,255,0.025);
+      --border: rgba(255,255,255,0.10); --border-mid: rgba(255,255,255,0.22);
+      --text-primary: #f0ede8; --text-secondary: #b4b2a9; --text-tertiary: #888780;
     }
     body { font-family: var(--font); background: var(--bg); color: var(--text-primary); padding: 2rem 1.5rem 3rem; min-width: 820px; }
 
     .header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:1.5rem; }
     .header-left h1 { font-size:17px; font-weight:600; color:var(--text-primary); margin-bottom:3px; }
     .header-left p  { font-size:12px; color:#8B7420; background:#FEF7E8; border:0.5px solid #E8D5A0; display:inline-block; padding:3px 10px; border-radius:var(--radius-sm); margin-top:4px; }
-    @media (prefers-color-scheme: dark) { .header-left p { color:#D4B84A; background:rgba(250,199,117,0.1); border-color:rgba(250,199,117,0.25); } }
+    @media (prefers-color-scheme: dark) { :root:not(.light) .header-left p { color:#D4B84A; background:rgba(250,199,117,0.1); border-color:rgba(250,199,117,0.25); } }
+    :root.dark .header-left p { color:#D4B84A; background:rgba(250,199,117,0.1); border-color:rgba(250,199,117,0.25); }
     .header-controls { display:flex; align-items:center; gap:10px; }
+    .theme-btn { display:flex; align-items:center; justify-content:center; width:32px; height:32px; background:var(--bg-secondary); border:0.5px solid var(--border-mid); border-radius:var(--radius-md); cursor:pointer; font-size:14px; line-height:1; padding:0; }
     .date-control { display:flex; align-items:center; gap:8px; background:var(--bg-secondary); border:0.5px solid var(--border-mid); border-radius:var(--radius-md); padding:6px 12px; }
     .date-control label { font-size:11px; color:var(--text-secondary); white-space:nowrap; }
     .date-control input[type="date"] { font-family:var(--font); font-size:12px; font-weight:500; color:var(--text-primary); background:transparent; border:none; outline:none; cursor:pointer; }
@@ -135,9 +142,12 @@
     <div class="header-controls">
       <div class="date-control">
         <label for="date-picker">Today</label>
-        <input type="date" id="date-picker" value="2026-03-26" />
-        <span class="date-badge" id="date-badge">26 Mar</span>
+        <input type="date" id="date-picker" value="2026-03-27" />
+        <span class="date-badge" id="date-badge">27 Mar</span>
       </div>
+      <button class="theme-btn" id="theme-toggle" title="Toggle light/dark mode">
+        <span id="theme-icon">&#9790;</span>
+      </button>
     </div>
   </div>
 
@@ -400,11 +410,12 @@
         },
         {
           name: "Payments integration",
-          sub:  "No Jira ticket · BLOCKED by payments team",
+          sub:  "No Jira ticket · BLOCKED by payments team since Mar 16",
           milestone: "ga",
           tickets: [],
           bars: [
-            { cls:"b-urgent", s:new Date(2026,2,5), e:new Date(2026,4,11), dl:new Date(2026,4,11), ddc:"dd-red" },
+            { cls:"b-atrisk", s:new Date(2026,2,5), e:new Date(2026,2,16), dl:new Date(2026,2,16), ddc:"dd-amber" },
+            { cls:"b-urgent", s:new Date(2026,2,16), e:new Date(2026,2,27), dl:new Date(2026,2,27), ddc:"dd-red" },
           ],
         },
       ],
@@ -850,9 +861,30 @@
   document.getElementById("last-updated").textContent = new Date().toLocaleDateString("en-GB", { day:"numeric", month:"long", year:"numeric" });
   buildAxis();
   const pickerEl = document.getElementById("date-picker");
-  pickerEl.value = "2026-03-26";
-  updateDate("2026-03-26");
+  pickerEl.value = "2026-03-27";
+  updateDate("2026-03-27");
   pickerEl.addEventListener("change", function() { updateDate(this.value); });
+
+  /* Theme toggle */
+  const root = document.documentElement;
+  const themeIcon = document.getElementById("theme-icon");
+  const stored = localStorage.getItem("theme");
+  if (stored === "dark") { root.classList.add("dark"); root.classList.remove("light"); themeIcon.innerHTML = "&#9788;"; }
+  else if (stored === "light") { root.classList.add("light"); root.classList.remove("dark"); themeIcon.innerHTML = "&#9790;"; }
+  else { themeIcon.innerHTML = window.matchMedia("(prefers-color-scheme: dark)").matches ? "&#9788;" : "&#9790;"; }
+
+  document.getElementById("theme-toggle").addEventListener("click", function() {
+    const isDark = root.classList.contains("dark") || (!root.classList.contains("light") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if (isDark) {
+      root.classList.remove("dark"); root.classList.add("light");
+      themeIcon.innerHTML = "&#9790;";
+      localStorage.setItem("theme", "light");
+    } else {
+      root.classList.remove("light"); root.classList.add("dark");
+      themeIcon.innerHTML = "&#9788;";
+      localStorage.setItem("theme", "dark");
+    }
+  });
 
   document.querySelectorAll(".filter-pill").forEach(pill => {
     pill.addEventListener("click", function() {
