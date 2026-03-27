@@ -55,7 +55,9 @@ function formatDateConstructor(d: Date): string {
 }
 
 function parseDateStringToConstructor(dateStr: string): string {
-  const d = new Date(dateStr);
+  // Append T12:00:00 to bare date strings to avoid timezone rollover
+  const safe = dateStr.includes("T") ? dateStr : dateStr + "T12:00:00";
+  const d = new Date(safe);
   return `new Date(${d.getFullYear()},${d.getMonth()},${d.getDate()})`;
 }
 

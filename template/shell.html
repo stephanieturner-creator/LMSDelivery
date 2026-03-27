@@ -338,6 +338,17 @@
           bar.className = "bar " + b.cls;
           bar.style.left = left + "%"; bar.style.width = width + "%";
 
+          if (hasTickets) {
+            bar.style.cursor = "pointer";
+            bar.addEventListener("click", function() {
+              if (row.tickets.length === 1) {
+                window.open(JIRA_BASE + row.tickets[0].k, "_blank");
+              } else {
+                openTicketModal(row.name, row.tickets);
+              }
+            });
+          }
+
           if (b.dl) {
             if (b.cls === "b-done") {
               bar.innerHTML = `<span class="bar-label">Done · ${fmt(b.dl)}</span>`;

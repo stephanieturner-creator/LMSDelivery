@@ -140,10 +140,10 @@ function statusText(status: RowStatus, tickets: JiraTicket[], epicStatus?: strin
 
 // Milestone → phase deadline mapping
 const MILESTONE_DEADLINES: Record<string, string> = {
-  alpha: "2026-03-30",
-  alpha2: "2026-04-14",
-  beta: "2026-04-27",
-  ga: "2026-05-25",
+  alpha: "2026-03-30T12:00:00",
+  alpha2: "2026-04-14T12:00:00",
+  beta: "2026-04-27T12:00:00",
+  ga: "2026-05-25T12:00:00",
 };
 
 export interface CrossRefOptions {
