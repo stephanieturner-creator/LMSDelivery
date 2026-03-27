@@ -68,6 +68,14 @@ export function render(groupsJs: string, today: Date): void {
   const isoDate = formatISODate(today);
   html = html.replaceAll("__TODAY__", isoDate);
 
+  // 3. Replace __REFRESH_TIME__ with exact timestamp
+  const now = new Date();
+  const refreshTime = now.toLocaleString("en-GB", {
+    day: "numeric", month: "short", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+  });
+  html = html.replaceAll("__REFRESH_TIME__", refreshTime);
+
   // 4. Update "last-updated" display
   const humanDate = formatHumanDate(today);
   html = html.replace(
