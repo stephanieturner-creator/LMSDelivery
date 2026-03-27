@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>LearnV3 — Release &amp; Delivery Timeline</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -417,19 +420,11 @@
   pickerEl.addEventListener("change", function() { updateDate(this.value); });
   document.getElementById("date-control").addEventListener("click", function() { pickerEl.showPicker(); });
 
-  /* Refresh button — reloads page and updates timestamp */
-  function updateRefreshTime() {
-    const now = new Date();
-    const str = now.toLocaleString("en-GB", { day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit" });
-    document.getElementById("last-refreshed").textContent = "Last refreshed: " + str;
-  }
+  /* Refresh button — cache-busting reload */
   document.getElementById("refresh-btn").addEventListener("click", function() {
     const btn = this;
     btn.classList.add("spinning");
-    setTimeout(() => {
-      updateRefreshTime();
-      btn.classList.remove("spinning");
-    }, 600);
+    setTimeout(() => { window.location.href = window.location.pathname + "?t=" + Date.now(); }, 600);
   });
 
   /* Theme toggle */

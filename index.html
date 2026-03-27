@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>LearnV3 — Release &amp; Delivery Timeline</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -151,7 +154,7 @@
     </div>
     <div class="header-controls">
       <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-size:10px;color:var(--text-tertiary);" id="last-refreshed">Last refreshed: 27 Mar 2026 at 13:18</span>
+        <span style="font-size:10px;color:var(--text-tertiary);" id="last-refreshed">Last refreshed: 27 Mar 2026 at 13:34</span>
         <button class="icon-btn refresh-btn" id="refresh-btn" title="Refresh data from Jira &amp; GitHub">
           <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           <span>Refresh</span>
@@ -879,19 +882,11 @@
   pickerEl.addEventListener("change", function() { updateDate(this.value); });
   document.getElementById("date-control").addEventListener("click", function() { pickerEl.showPicker(); });
 
-  /* Refresh button — reloads page and updates timestamp */
-  function updateRefreshTime() {
-    const now = new Date();
-    const str = now.toLocaleString("en-GB", { day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit" });
-    document.getElementById("last-refreshed").textContent = "Last refreshed: " + str;
-  }
+  /* Refresh button — cache-busting reload */
   document.getElementById("refresh-btn").addEventListener("click", function() {
     const btn = this;
     btn.classList.add("spinning");
-    setTimeout(() => {
-      updateRefreshTime();
-      btn.classList.remove("spinning");
-    }, 600);
+    setTimeout(() => { window.location.href = window.location.pathname + "?t=" + Date.now(); }, 600);
   });
 
   /* Theme toggle */
