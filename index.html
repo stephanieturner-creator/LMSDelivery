@@ -162,8 +162,8 @@
       </div>
       <div class="date-control" id="date-control">
         <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span id="date-display">2026-03-27</span>
-        <input type="date" id="date-picker" value="2026-03-27" />
+        <span id="date-display">2026-03-31</span>
+        <input type="date" id="date-picker" value="2026-03-31" />
       </div>
       <button class="icon-btn" id="theme-toggle" title="Toggle light/dark mode">
         <span id="theme-icon"></span>
@@ -207,7 +207,7 @@
 
 
   <div class="footer">
-    Last updated: 27 Mar 2026<span id="last-updated"></span> &nbsp;·&nbsp; Jira LMSV3 + GitHub thrivecart/LearnV3
+    Last updated: 31 Mar 2026<span id="last-updated"></span> &nbsp;·&nbsp; Jira LMSV3 + GitHub thrivecart/LearnV3
   </div>
 
 <div class="ticket-modal-overlay" id="ticket-modal-overlay">
@@ -250,7 +250,7 @@
         milestone: "alpha",
         tickets: [{k:"LMSV3-604",s:"E0-S3: Analytics service"}],
         bars: [
-          { cls:"b-blocked", s:new Date(2026,2,11), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-gray" },
+          { cls:"b-blocked", s:new Date(2026,2,11), e:new Date(2026,2,31), dl:new Date(2026,2,30), ddc:"dd-gray" },
         ],
       },
       {
@@ -337,7 +337,7 @@
         milestone: "alpha",
         tickets: [{k:"LMSV3-621",s:"E3-S6: Creator generates and manages invite codes (Alpha+)"}],
         bars: [
-          { cls:"b-blocked", s:new Date(2026,2,11), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-gray" },
+          { cls:"b-blocked", s:new Date(2026,2,11), e:new Date(2026,2,31), dl:new Date(2026,2,30), ddc:"dd-gray" },
         ],
       }
     ],
@@ -416,7 +416,7 @@
         milestone: "alpha",
         tickets: [{k:"LMSV3-713",s:"Spike on Bunny.net Asset Segmentation & Backend Improvements"},{k:"LMSV3-994",s:"Pikto: Backend Provider Abstraction (Bunny/Piktochart)"}],
         bars: [
-          { cls:"b-alpha2", s:new Date(2026,2,13), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-blue" },
+          { cls:"b-alpha2", s:new Date(2026,2,13), e:new Date(2026,2,31), dl:new Date(2026,2,30), ddc:"dd-blue" },
         ],
       }
     ],
@@ -444,7 +444,7 @@
         milestone: "alpha",
         tickets: [{k:"LMSV3-457",s:"COURSE MANAGEMENT"}],
         bars: [
-          { cls:"b-qa", s:new Date(2026,2,24), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-amber" },
+          { cls:"b-qa", s:new Date(2026,2,24), e:new Date(2026,2,31), dl:new Date(2026,2,30), ddc:"dd-amber" },
         ],
       }
     ],
@@ -482,11 +482,11 @@
     rows: [
       {
         name: "Media SDK + integrations",
-        sub: "993/994/995/996/997/998/999/1000/1015 · Done (Jira stale)",
+        sub: "993/994/995/996/997/998/999/1000/1015 · Done",
         milestone: "done",
         tickets: [{k:"LMSV3-993",s:"Pikto: Media Assets Schema + CRUD Service"},{k:"LMSV3-994",s:"Pikto: Backend Provider Abstraction (Bunny/Piktochart)"},{k:"LMSV3-995",s:"Piktochart Token Exchange Service"},{k:"LMSV3-996",s:"Piktochart SDK Widget Component"},{k:"LMSV3-997",s:"Pikto: Wire Widget into Course Builder"},{k:"LMSV3-998",s:"Pikto: Wire Widget into Community Settings"},{k:"LMSV3-999",s:"Pikto: Wire Widget into Creator Profile"},{k:"LMSV3-1000",s:"Pikto: Environment Configuration + Deployment Readiness"},{k:"LMSV3-1015",s:"Pikto: Integration Credentials Table + Persistent Token Storage"}],
         bars: [
-          { cls:"b-done", s:new Date(2026,2,24), e:new Date(2026,2,25), dl:new Date(2026,2,25), ddc:"dd-green" },
+          { cls:"b-done", s:new Date(2026,2,24), e:new Date(2026,2,28), dl:new Date(2026,2,28), ddc:"dd-green" },
         ],
       }
     ],
@@ -519,11 +519,11 @@
     rows: [
       {
         name: "Migration pipeline — 7 batches",
-        sub: "1020-1035 · Done (Jira stale)",
+        sub: "1020-1035 · Done",
         milestone: "done",
         tickets: [{k:"LMSV3-1020",s:"[Batch 1] Add pending grant queue processing to evaluateCourseLockStates()"},{k:"LMSV3-1021",s:"[Batch 2] Create tcl3_product_access_mappings ZModel entity"},{k:"LMSV3-1022",s:"[Batch 2] Build product-mapping service and API routes"},{k:"LMSV3-1023",s:"[Batch 2] Build admin UI for product-to-access mapping"},{k:"LMSV3-1024",s:"[Batch 2] Create legacy product discovery script"},{k:"LMSV3-1025",s:"[Batch 3] Create enrollment service (enrollFromWebhook)"},{k:"LMSV3-1026",s:"[Batch 3] Create ThriveCart webhook endpoint with HMAC verification"},{k:"LMSV3-1027",s:"[Batch 3] Implement idempotent event processing and payment event logging"},{k:"LMSV3-1028",s:"[Batch 4] Create course rules format audit script"},{k:"LMSV3-1029",s:"[Batch 4] Create course rules translation script (PHP DSL to LearnV3 format)"},{k:"LMSV3-1030",s:"[Batch 5] Run and validate lesson-body-parser against migrated accounts"},{k:"LMSV3-1031",s:"[Batch 5] Implement image URL reconstruction and video embed normalization"},{k:"LMSV3-1032",s:"[Batch 6] Implement creator dual-scheme password verification with auto-upgrade"},{k:"LMSV3-1033",s:"[Batch 6] Implement creator 2FA TOTP verification"},{k:"LMSV3-1034",s:"[Batch 6] Implement S3 image URL reconstruction in rendering components"},{k:"LMSV3-1035",s:"[Batch 7] Create master migration script (migrate-merchant.ts)"}],
         bars: [
-          { cls:"b-done", s:new Date(2026,2,26), e:new Date(2026,2,26), dl:new Date(2026,2,26), ddc:"dd-green" },
+          { cls:"b-done", s:new Date(2026,2,26), e:new Date(2026,2,28), dl:new Date(2026,2,28), ddc:"dd-green" },
         ],
       }
     ],
@@ -537,7 +537,7 @@
         milestone: "alpha",
         tickets: [{k:"LMSV3-971",s:"Display reply-to-question linkage in course discussions"}],
         bars: [
-          { cls:"b-blocked", s:new Date(2026,2,24), e:new Date(2026,2,30), dl:new Date(2026,2,30), ddc:"dd-gray" },
+          { cls:"b-blocked", s:new Date(2026,2,24), e:new Date(2026,2,31), dl:new Date(2026,2,30), ddc:"dd-gray" },
         ],
       },
       {
@@ -877,8 +877,8 @@
 
   buildAxis();
   const pickerEl = document.getElementById("date-picker");
-  pickerEl.value = "2026-03-27";
-  updateDate("2026-03-27");
+  pickerEl.value = "2026-03-31";
+  updateDate("2026-03-31");
   pickerEl.addEventListener("change", function() { updateDate(this.value); });
   document.getElementById("date-control").addEventListener("click", function() { pickerEl.showPicker(); });
 

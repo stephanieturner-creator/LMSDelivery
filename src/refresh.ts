@@ -198,7 +198,7 @@ async function main(): Promise<void> {
   if (push) {
     console.log("\nPushing to git...");
     try {
-      const addResult = Bun.spawnSync(["git", "add", "index.html"], {
+      const addResult = Bun.spawnSync(["git", "add", "index.html", ".pr-cache.json"], {
         cwd: import.meta.dir + "/..",
       });
       if (addResult.exitCode !== 0) {
@@ -212,11 +212,12 @@ async function main(): Promise<void> {
         { cwd: import.meta.dir + "/.." }
       );
       if (commitResult.exitCode !== 0) {
-        const stderr = commitResult.stderr.toString();
-        if (stderr.includes("nothing to commit")) {
+        const output = commitResult.stdout.toString() + commitResult.stderr.toString();
+        if (output.includes("nothing to commit") || output.includes("working tree clean")) {
           console.log("No changes to commit.");
+          return;
         } else {
-          console.error("git commit failed:", stderr);
+          console.error("git commit failed:", output);
           process.exit(1);
         }
       } else {
